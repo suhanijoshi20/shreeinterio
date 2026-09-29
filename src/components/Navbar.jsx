@@ -1,16 +1,12 @@
 import React, { useState } from 'react';
-import { 
-  Search, Heart, ShoppingBag, User, Menu, X, ChevronDown 
-} from 'lucide-react';
+import { Search, Heart, ShoppingBag, User, Menu, X, ArrowRight } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, cartCount = 0, wishlistCount = 0 }) {
+export default function Navbar({ activeTab, setActiveTab, cartCount = 0, wishlistCount = 0, setIsConsultationModalOpen }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState(null);
 
   const handleNavClick = (tabName) => {
     setActiveTab(tabName);
     setIsMobileMenuOpen(false);
-    setActiveDropdown(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -27,43 +23,52 @@ export default function Navbar({ activeTab, setActiveTab, cartCount = 0, wishlis
   ];
 
   return (
-    <header className="bg-white sticky top-0 z-50 shadow-sm border-b border-[#e5dcd3] transition-all">
+    <header className="bg-white sticky top-0 z-50 shadow-sm border-b border-[#e5dcd3]">
+      {/* Top Announcement Bar */}
+      <div className="bg-[#2d241e] text-[#d9cdbf] text-[10px] sm:text-[11px] py-1.5 px-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <span>✨ Complete Interior & Furniture Solutions | Free Delivery above ₹25,000</span>
+          <div className="hidden md:flex gap-4">
+            <span>📞 8435299100</span>
+            <span>✉️ sbaindore@gmail.com</span>
+          </div>
+        </div>
+      </div>
+
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        
-        {/* Mobile Hamburger Button */}
+        {/* Mobile Toggle */}
         <button 
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-          className="xl:hidden p-1.5 text-[#2d241e] hover:bg-[#f4eee8] rounded-md transition-colors"
-          aria-label="Toggle Navigation"
+          className="xl:hidden p-1 text-[#2d241e]"
         >
           {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        {/* LOGO with Name */}
-        <button onClick={() => handleNavClick('home')} className="flex items-center gap-2.5 text-left shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-[#8c6d53] text-white flex items-center justify-center font-serif font-bold text-xl shadow-sm">
+        {/* LOGO */}
+        <button onClick={() => handleNavClick('home')} className="flex items-center gap-2 text-left shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-[#8c6d53] text-white flex items-center justify-center font-serif font-bold text-xl">
             S
           </div>
           <div>
             <h1 className="text-lg sm:text-xl font-serif font-bold tracking-tight text-[#2d241e] leading-none">
               ShreeInterio
             </h1>
-            <p className="text-[8px] sm:text-[9px] tracking-widest text-[#8c6d53] font-bold uppercase mt-0.5">
+            <p className="text-[8px] tracking-widest text-[#8c6d53] font-bold uppercase mt-0.5">
               LUXURY HOMES & DECOR
             </p>
           </div>
         </button>
 
-        {/* Desktop Navigation Links */}
+        {/* Desktop Links */}
         <nav className="hidden xl:flex items-center space-x-5 text-xs font-semibold tracking-wider text-[#42352b] uppercase">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => handleNavClick(item.id)}
-              className={`transition-all duration-200 py-1 border-b-2 ${
+              className={`transition-all py-1 border-b-2 ${
                 activeTab === item.id 
                   ? 'text-[#8c6d53] border-[#8c6d53] font-bold' 
-                  : 'border-transparent hover:text-[#8c6d53] hover:border-[#8c6d53]/50'
+                  : 'border-transparent hover:text-[#8c6d53]'
               }`}
             >
               {item.label}
@@ -71,23 +76,20 @@ export default function Navbar({ activeTab, setActiveTab, cartCount = 0, wishlis
           ))}
         </nav>
 
-        {/* Right Side Action Icons */}
-        <div className="flex items-center gap-1.5 sm:gap-3 text-[#42352b]">
-          {/* Search Button */}
+        {/* Right Action Icons & CTA Button */}
+        <div className="flex items-center gap-2 sm:gap-3 text-[#42352b]">
           <button 
-            onClick={() => handleNavClick('shop')}
-            className="p-2 hover:bg-[#f4eee8] rounded-full transition-colors relative group" 
-            title="Search Products"
+            onClick={() => setIsConsultationModalOpen(true)}
+            className="hidden sm:inline-flex bg-[#8c6d53] text-white px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-[#735842] transition-colors"
           >
+            Book Consultation
+          </button>
+
+          <button onClick={() => handleNavClick('shop')} className="p-2 hover:bg-[#f4eee8] rounded-full">
             <Search size={20} />
           </button>
 
-          {/* Wishlist Icon */}
-          <button 
-            onClick={() => handleNavClick('wishlist')}
-            className="p-2 hover:bg-[#f4eee8] rounded-full transition-colors relative" 
-            title="Wishlist"
-          >
+          <button onClick={() => handleNavClick('shop')} className="p-2 hover:bg-[#f4eee8] rounded-full relative">
             <Heart size={20} />
             {wishlistCount > 0 && (
               <span className="absolute top-1 right-1 bg-rose-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
@@ -96,12 +98,7 @@ export default function Navbar({ activeTab, setActiveTab, cartCount = 0, wishlis
             )}
           </button>
 
-          {/* Cart Icon */}
-          <button 
-            onClick={() => handleNavClick('cart')}
-            className="p-2 hover:bg-[#f4eee8] rounded-full transition-colors relative" 
-            title="Cart"
-          >
+          <button onClick={() => handleNavClick('shop')} className="p-2 hover:bg-[#f4eee8] rounded-full relative">
             <ShoppingBag size={20} />
             {cartCount > 0 && (
               <span className="absolute top-1 right-1 bg-[#8c6d53] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
@@ -109,37 +106,29 @@ export default function Navbar({ activeTab, setActiveTab, cartCount = 0, wishlis
               </span>
             )}
           </button>
-
-          {/* Account Icon */}
-          <button 
-            onClick={() => handleNavClick('account')}
-            className="p-2 hover:bg-[#f4eee8] rounded-full transition-colors" 
-            title="Account"
-          >
-            <User size={20} />
-          </button>
         </div>
-
       </div>
 
-      {/* Mobile Drawer Menu */}
+      {/* Mobile Drawer */}
       {isMobileMenuOpen && (
-        <div className="xl:hidden border-t border-[#e5dcd3] bg-white px-4 py-4 shadow-xl animate-fadeIn">
-          <div className="flex flex-col space-y-2 text-xs font-semibold tracking-wide uppercase text-[#42352b]">
-            {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handleNavClick(item.id)}
-                className={`text-left py-2.5 px-3 rounded-lg border-b border-[#f4eee8] transition-colors ${
-                  activeTab === item.id 
-                    ? 'bg-[#f4eee8] text-[#8c6d53] font-bold' 
-                    : 'hover:bg-[#faf7f5]'
-                }`}
-              >
-                {item.label}
-              </button>
-            ))}
-          </div>
+        <div className="xl:hidden border-t border-[#e5dcd3] bg-white px-4 py-4 space-y-2">
+          {navItems.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => handleNavClick(item.id)}
+              className={`block w-full text-left py-2 px-3 text-xs uppercase font-semibold rounded ${
+                activeTab === item.id ? 'bg-[#f4eee8] text-[#8c6d53]' : ''
+              }`}
+            >
+              {item.label}
+            </button>
+          ))}
+          <button 
+            onClick={() => { setIsConsultationModalOpen(true); setIsMobileMenuOpen(false); }}
+            className="w-full mt-2 bg-[#8c6d53] text-white py-2.5 rounded text-xs uppercase font-bold"
+          >
+            Book Consultation
+          </button>
         </div>
       )}
     </header>
