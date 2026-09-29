@@ -1,236 +1,392 @@
 import React from 'react';
-import { ArrowRight, CheckCircle2, Star, Truck, ShieldCheck, Headphones, Palette } from 'lucide-react';
+import { PRODUCTS, ROOMS, CATEGORIES, STYLES, SERVICES, PROJECTS, INSPIRATIONS, REVIEWS } from '../data/mockData';
+import ProductCard from '../components/ProductCard';
 
-export default function Home({ setActiveTab, setCategoryFilter }) {
-  const categories = [
-    { name: 'Sofas & Seating', img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Beds & Bedroom', img: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Dining & Kitchen', img: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Storage & Wardrobes', img: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Tables & Chairs', img: 'https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Lighting', img: 'https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Rugs & Carpets', img: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&w=300&q=80' },
-    { name: 'Home Décor', img: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=300&q=80' },
-  ];
-
-  const trendingProducts = [
-    { id: 1, name: 'L-Shaped Fabric Sofa', rating: 4.8, reviews: 56, mrp: 72000, price: 48999, discount: '32% OFF', img: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&w=600&q=80' },
-    { id: 2, name: 'Wooden Dining Table Set', rating: 4.6, reviews: 42, mrp: 46000, price: 32999, discount: '28% OFF', img: 'https://images.unsplash.com/photo-1617806118233-18e1de247200?auto=format&fit=crop&w=600&q=80' },
-    { id: 3, name: 'King Size Upholstered Bed', rating: 4.7, reviews: 37, mrp: 80000, price: 54999, discount: '31% OFF', img: 'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=600&q=80' },
-    { id: 4, name: '3 Door Wooden Wardrobe', rating: 4.5, reviews: 28, mrp: 36000, price: 24999, discount: '31% OFF', img: 'https://images.unsplash.com/photo-1595428774223-ef52624120d2?auto=format&fit=crop&w=600&q=80' },
-  ];
+export default function Home({ setActiveTab, onAddToCart, onToggleWishlist, wishlist, onSelectProduct, openConsultationModal, onSelectProject }) {
+  const trendingProducts = PRODUCTS.filter(p => p.isTrending);
+  const newArrivals = PRODUCTS.filter(p => p.isNew);
 
   return (
-    <div className="space-y-16 pb-16">
+    <div className="space-y-20 pb-16">
       
-      {/* Hero Banner Section */}
-      <section className="relative bg-[#f4eee8] py-16 md:py-24 px-4 overflow-hidden border-b border-[#e5dcd3]">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      {/* 2. HERO / FRONT PAGE */}
+      <section className="relative bg-[#f5f1eb] py-16 md:py-24">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <span className="text-[#8c6d53] text-xs font-bold uppercase tracking-widest bg-[#e8ded5] px-3 py-1 rounded-full">
-              PREMIUM INTERIORS | FURNITURE | DÉCOR
+            <span className="text-xs uppercase tracking-widest font-semibold text-[#c89d7c]">
+              ShreeInterio Studio
             </span>
-            <h1 className="text-4xl md:text-6xl font-serif text-[#2d241e] leading-tight">
-              Beautiful Spaces for a Comfortable and Royal Life
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#2d241e] font-bold leading-tight">
+              Transform Your Space, Define Your Style.
             </h1>
-            <p className="text-[#6b5a4e] text-sm md:text-base max-w-lg leading-relaxed">
-              Discover thoughtfully designed furniture, décor and interior solutions that bring together comfort, functionality and timeless style. From elegant furniture to customized interiors, ShreeInterio helps you create spaces that truly feel like your own.
+            <p className="text-sm md:text-base text-[#6b5b4e] max-w-lg leading-relaxed">
+              Discover premium furniture, décor, and complete turn-key interior solutions designed to make your home beautiful and functional.
             </p>
             <div className="flex flex-wrap gap-4 pt-2">
-              <button onClick={() => setActiveTab('shop')} className="bg-[#8c6d53] hover:bg-[#735740] text-white px-7 py-3 rounded-md font-medium text-xs uppercase tracking-wider flex items-center gap-2 transition shadow-md">
-                Shop Now <ArrowRight size={14} />
+              <button 
+                onClick={() => setActiveTab('shop')}
+                className="bg-[#2d241e] text-white hover:bg-[#42352b] px-6 py-3 rounded text-xs uppercase tracking-wider font-medium transition-all shadow-md"
+              >
+                Shop Collection
               </button>
-              <button onClick={() => setActiveTab('kitchen')} className="bg-white border border-[#b59e8c] text-[#523d2e] hover:bg-[#faf7f5] px-7 py-3 rounded-md font-medium text-xs uppercase tracking-wider transition">
-                Explore Interiors
+              <button 
+                onClick={() => setActiveTab('projects')}
+                className="border border-[#2d241e] text-[#2d241e] hover:bg-[#2d241e] hover:text-white px-6 py-3 rounded text-xs uppercase tracking-wider font-medium transition-all"
+              >
+                Explore Designs
               </button>
+            </div>
+            {/* Highlights */}
+            <div className="pt-6 border-t border-[#e5ded4] flex items-center space-x-4 text-[11px] font-medium text-[#8c7a6b]">
+              <span>✦ Premium Designs</span>
+              <span>•</span>
+              <span>✦ Quality Products</span>
+              <span>•</span>
+              <span>✦ Complete Solutions</span>
             </div>
           </div>
 
           <div className="relative">
-            <div className="absolute -top-4 -right-4 bg-[#8c6d53] text-white text-center rounded-full w-24 h-24 flex flex-col justify-center items-center shadow-lg z-10 font-serif">
-              <span className="text-xs uppercase">Up To</span>
-              <span className="text-xl font-bold">40%</span>
-              <span className="text-[10px] uppercase">Off</span>
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-xl border-4 border-white">
+              <img 
+                src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&q=80&w=1000" 
+                alt="Luxury Modern Interior" 
+                className="w-full h-full object-cover"
+              />
             </div>
-            <img 
-              src="https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1000&q=80" 
-              alt="ShreeInterio Luxury Living Room" 
-              className="rounded-2xl shadow-xl w-full object-cover h-[400px]"
-            />
+            <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg border border-[#e5ded4] hidden sm:block max-w-xs">
+              <p className="text-xs font-serif font-bold text-[#2d241e]">Indore's Trusted Interior Studio</p>
+              <p className="text-[10px] text-[#8c7a6b] mt-1">100+ Completed Homes • Custom Furniture Workshop</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Shop By Category (Circular Icons) */}
-      <section className="max-w-7xl mx-auto px-4 space-y-8">
-        <div className="flex justify-between items-end border-b border-[#e5dcd3] pb-4">
-          <div>
-            <span className="text-[11px] font-bold text-[#8c6d53] uppercase tracking-widest">SHOP BY CATEGORY</span>
-            <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e]">Explore Our Collections</h2>
-          </div>
-          <button onClick={() => setActiveTab('shop')} className="text-xs font-bold text-[#8c6d53] hover:underline flex items-center gap-1">
-            View All Categories →
-          </button>
+      {/* 3. SHOP BY ROOM */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="text-center max-w-xl mx-auto mb-10 space-y-2">
+          <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e] font-bold">Shop by Room</h2>
+          <p className="text-xs text-[#8c7a6b]">Find everything you need for every corner of your home.</p>
         </div>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-6">
-          {categories.map((cat, idx) => (
-            <button 
-              key={idx} 
-              onClick={() => { setCategoryFilter(cat.name); setActiveTab('shop'); }}
-              className="group flex flex-col items-center space-y-3 text-center"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {ROOMS.map((room) => (
+            <div 
+              key={room.id}
+              onClick={() => setActiveTab('rooms')}
+              className="group relative h-64 rounded-xl overflow-hidden cursor-pointer shadow-sm hover:shadow-md transition-all"
             >
-              <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-[#e5dcd3] group-hover:border-[#8c6d53] transition duration-300 p-1 bg-white shadow-sm">
-                <img src={cat.img} alt={cat.name} className="w-full h-full object-cover rounded-full group-hover:scale-110 transition duration-500" />
-              </div>
-              <span className="text-xs font-semibold text-[#42352b] group-hover:text-[#8c6d53] transition">{cat.name}</span>
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* Trending Now */}
-      <section className="max-w-7xl mx-auto px-4 space-y-8">
-        <div className="flex justify-between items-end border-b border-[#e5dcd3] pb-4">
-          <div>
-            <span className="text-[11px] font-bold text-[#8c6d53] uppercase tracking-widest">FEATURED PRODUCTS</span>
-            <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e]">Trending Now</h2>
-            <p className="text-xs text-[#6b5a4e] mt-1">Discover our latest furniture and décor pieces designed for modern Indian homes.</p>
-          </div>
-          <button onClick={() => setActiveTab('shop')} className="text-xs font-bold text-[#8c6d53] hover:underline">
-            Shop Furniture →
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {trendingProducts.map((prod) => (
-            <div key={prod.id} className="bg-white rounded-xl border border-[#e5dcd3] overflow-hidden shadow-sm hover:shadow-md transition group">
-              <div className="relative h-56 overflow-hidden bg-[#faf7f5]">
-                <img src={prod.img} alt={prod.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
-                <span className="absolute top-3 left-3 bg-[#8c6d53] text-white text-[10px] font-bold px-2 py-1 rounded">
-                  {prod.discount}
+              <img src={room.image} alt={room.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 text-white">
+                <h3 className="text-lg font-serif font-semibold">{room.name}</h3>
+                <p className="text-xs text-gray-200 mt-1">{room.desc}</p>
+                <span className="text-xs text-[#c89d7c] font-medium mt-3 inline-flex items-center group-hover:translate-x-1 transition-transform">
+                  Explore →
                 </span>
               </div>
-              <div className="p-4 space-y-2">
-                <h3 className="font-serif font-semibold text-[#2d241e] text-sm">{prod.name}</h3>
-                <div className="flex items-center gap-1 text-amber-500 text-xs">
-                  <Star size={12} fill="currentColor" />
-                  <span className="font-bold text-[#2d241e]">{prod.rating}</span>
-                  <span className="text-[#8c7a6b]">({prod.reviews})</span>
-                </div>
-                <div className="flex items-baseline gap-2 pt-1">
-                  <span className="text-base font-bold text-[#8c6d53]">₹{prod.price.toLocaleString('en-IN')}</span>
-                  <span className="text-xs text-[#8c7a6b] line-through">₹{prod.mrp.toLocaleString('en-IN')}</span>
-                </div>
-                <button onClick={() => setActiveTab('shop')} className="w-full mt-2 bg-[#2d241e] hover:bg-[#8c6d53] text-white text-xs font-semibold py-2 rounded transition">
-                  View Options
-                </button>
-              </div>
             </div>
           ))}
         </div>
       </section>
 
-      {/* Designed for Your Lifestyle */}
-      <section className="bg-[#f9f6f2] py-14 border-y border-[#e5dcd3]">
-        <div className="max-w-7xl mx-auto px-4 space-y-8">
-          <div className="text-center space-y-2">
-            <span className="text-[11px] font-bold text-[#8c6d53] uppercase tracking-widest">SHOP BY STYLE</span>
-            <h2 className="text-3xl font-serif text-[#2d241e]">Styles for Every Space</h2>
+      {/* 4. SHOP BY CATEGORY */}
+      <section className="bg-[#f5f1eb] py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e] font-bold">Shop by Category</h2>
+            <p className="text-xs text-[#8c7a6b] mt-1">Explore our wide selection of decor & handcrafted pieces.</p>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { title: 'Modern', desc: 'Clean lines, elegant finishes and contemporary furniture for modern homes.' },
-              { title: 'Minimalist', desc: 'Simple, functional and clutter-free designs for peaceful living.' },
-              { title: 'Luxury', desc: 'Premium materials, sophisticated details and statement furniture.' },
-              { title: 'Contemporary', desc: 'A perfect balance of modern aesthetics and everyday functionality.' }
-            ].map((style, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-xl border border-[#e5dcd3] shadow-sm text-center space-y-2">
-                <h3 className="text-lg font-serif font-bold text-[#2d241e]">{style.title}</h3>
-                <p className="text-xs text-[#6b5a4e] leading-relaxed">{style.desc}</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
+            {CATEGORIES.map((cat, idx) => (
+              <div 
+                key={idx} 
+                onClick={() => setActiveTab('shop')}
+                className="group cursor-pointer flex flex-col items-center space-y-3"
+              >
+                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-full overflow-hidden border-2 border-white shadow-md group-hover:scale-105 transition-all">
+                  <img src={cat.image} alt={cat.name} className="w-full h-full object-cover" />
+                </div>
+                <span className="text-xs font-medium text-[#2d241e] group-hover:text-[#c89d7c] transition-colors">{cat.name}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Customized Furniture Banner */}
+      {/* 5. TRENDING PRODUCTS */}
       <section className="max-w-7xl mx-auto px-4">
-        <div className="bg-[#2d241e] text-white rounded-2xl p-8 md:p-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div className="space-y-4">
-            <span className="text-amber-400 text-xs font-bold uppercase tracking-widest">CUSTOMIZED FURNITURE</span>
-            <h2 className="text-3xl md:text-4xl font-serif">Your Space. Your Design. Your Furniture.</h2>
-            <p className="text-[#d9cdbf] text-xs md:text-sm leading-relaxed">
-              Looking for something unique? Our customized furniture solutions are designed according to your space, lifestyle, measurements and preferences.
-            </p>
-            <button onClick={() => setActiveTab('customFurniture')} className="bg-[#8c6d53] hover:bg-[#a38063] text-white px-6 py-3 rounded-md font-medium text-xs uppercase tracking-wider flex items-center gap-2 transition inline-flex">
-              Get Customized Furniture →
-            </button>
-          </div>
+        <div className="flex justify-between items-end mb-8">
           <div>
-            <img src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=800&q=80" alt="Customized Furniture Indore" className="rounded-xl shadow-lg" />
+            <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e] font-bold">Trending Now</h2>
+            <p className="text-xs text-[#8c7a6b] mt-1">Our most loved furniture and decor pieces this season.</p>
+          </div>
+          <button 
+            onClick={() => setActiveTab('shop')}
+            className="text-xs font-semibold text-[#c89d7c] hover:underline"
+          >
+            View All Products →
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {trendingProducts.map((p) => (
+            <ProductCard 
+              key={p.id} 
+              product={p} 
+              onAddToCart={onAddToCart}
+              onToggleWishlist={onToggleWishlist}
+              isWishlisted={wishlist.some(item => item.id === p.id)}
+              onSelectProduct={onSelectProduct}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* 6. SHOP BY INTERIOR STYLE */}
+      <section className="bg-[#2d241e] text-white py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
+            <h2 className="text-2xl md:text-3xl font-serif font-bold">Shop by Interior Style</h2>
+            <p className="text-xs text-[#d9cdbf]">Find items tailored to your home's unique design language.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {STYLES.map((st, i) => (
+              <div 
+                key={i} 
+                onClick={() => setActiveTab('styles')}
+                className="group relative h-72 rounded-lg overflow-hidden cursor-pointer border border-[#42352b]"
+              >
+                <img src={st.image} alt={st.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 opacity-80 group-hover:opacity-100" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col justify-end">
+                  <h3 className="text-xl font-serif font-bold text-white">{st.name}</h3>
+                  <p className="text-xs text-gray-300 mt-1">{st.desc}</p>
+                  <span className="text-xs text-[#c89d7c] font-medium mt-3 inline-flex items-center">
+                    Explore Style →
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Interior Design Services Overview */}
-      <section className="max-w-7xl mx-auto px-4 space-y-8">
-        <div className="text-center space-y-2">
-          <span className="text-[11px] font-bold text-[#8c6d53] uppercase tracking-widest">OUR EXPERTISE</span>
-          <h2 className="text-3xl font-serif text-[#2d241e]">Interior Design Services</h2>
-          <p className="text-xs text-[#6b5a4e] max-w-xl mx-auto">
-            ShreeInterio goes beyond furniture. We create complete interior solutions for homes and commercial spaces in Indore.
-          </p>
+      {/* 7. NEW ARRIVALS */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="text-center max-w-xl mx-auto mb-10 space-y-2">
+          <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e] font-bold">New Arrivals</h2>
+          <p className="text-xs text-[#8c7a6b]">Fresh handcrafted designs for your space.</p>
         </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          {newArrivals.map((p) => (
+            <ProductCard 
+              key={p.id} 
+              product={p} 
+              onAddToCart={onAddToCart}
+              onToggleWishlist={onToggleWishlist}
+              isWishlisted={wishlist.some(item => item.id === p.id)}
+              onSelectProduct={onSelectProduct}
+            />
+          ))}
+        </div>
+      </section>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            'Living Room Interiors', 'Bedroom Interiors', 'Modular Kitchen Design',
-            'Wardrobe Design', 'False Ceiling & Lighting', 'Customized Furniture',
-            'Complete Home Interiors', 'Office Interiors', 'Turnkey Interior Execution'
-          ].map((service, idx) => (
-            <div key={idx} className="bg-white p-5 rounded-lg border border-[#e5dcd3] flex items-center gap-3">
-              <CheckCircle2 size={18} className="text-[#8c6d53] shrink-0" />
-              <span className="text-xs font-bold text-[#2d241e]">{service}</span>
+      {/* 8. OUR SERVICES */}
+      <section className="bg-[#f5f1eb] py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center max-w-xl mx-auto mb-12 space-y-2">
+            <span className="text-xs uppercase tracking-widest text-[#c89d7c] font-semibold">Interior Solutions</span>
+            <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e] font-bold">Tailored to You</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {SERVICES.map((s) => (
+              <div key={s.id} className="bg-white p-6 rounded-xl border border-[#e5ded4] shadow-sm flex flex-col justify-between space-y-4">
+                <div>
+                  <span className="text-2xl font-serif font-bold text-[#c89d7c]">{s.id}</span>
+                  <h3 className="text-base font-serif font-bold text-[#2d241e] mt-2">{s.title}</h3>
+                  <p className="text-xs text-[#6b5b4e] mt-2 leading-relaxed">{s.desc}</p>
+                </div>
+                <button 
+                  onClick={openConsultationModal}
+                  className="text-xs font-semibold text-[#2d241e] hover:text-[#c89d7c] text-left pt-4 border-t border-[#f0e8de]"
+                >
+                  Get Started →
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 9. FEATURED PROJECTS */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-between items-end mb-8">
+          <div>
+            <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e] font-bold">Featured Projects</h2>
+            <p className="text-xs text-[#8c7a6b] mt-1">Explore our latest residential and commercial interiors in Indore.</p>
+          </div>
+          <button 
+            onClick={() => setActiveTab('projects')}
+            className="text-xs font-semibold text-[#c89d7c] hover:underline"
+          >
+            View All Projects →
+          </button>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {PROJECTS.map((proj) => (
+            <div 
+              key={proj.id} 
+              onClick={() => onSelectProject(proj)}
+              className="group cursor-pointer rounded-xl overflow-hidden border border-[#e5ded4] bg-white"
+            >
+              <div className="aspect-[16/9] overflow-hidden">
+                <img src={proj.image} alt={proj.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              </div>
+              <div className="p-6 flex justify-between items-center">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-[#c89d7c]">{proj.category} • {proj.location}</span>
+                  <h3 className="text-lg font-serif font-bold text-[#2d241e] mt-0.5">{proj.title}</h3>
+                </div>
+                <span className="text-xs font-medium text-[#2d241e] group-hover:translate-x-1 transition-transform">
+                  View Project →
+                </span>
+              </div>
             </div>
           ))}
         </div>
-
-        <div className="text-center">
-          <button onClick={() => setActiveTab('homeInteriors')} className="bg-[#2d241e] text-white px-8 py-3 rounded-md font-medium text-xs uppercase tracking-wider hover:bg-[#8c6d53] transition">
-            Explore Interior Design →
-          </button>
-        </div>
       </section>
 
-      {/* Why Choose ShreeInterio */}
-      <section className="bg-[#f4eee8] py-12 border-y border-[#e5dcd3]">
-        <div className="max-w-7xl mx-auto px-4 space-y-8">
-          <h2 className="text-2xl font-serif text-center text-[#2d241e]">Why Choose ShreeInterio?</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="space-y-2">
-              <h3 className="text-sm font-bold text-[#2d241e]">Premium Quality</h3>
-              <p className="text-xs text-[#6b5a4e]">Thoughtfully selected materials and finishes for long-lasting performance.</p>
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-sm font-bold text-[#2d241e]">Customized Solutions</h3>
-              <p className="text-xs text-[#6b5a4e]">Designed around your exact space and interior requirements in Indore.</p>
-            </div>
-            <div className="space-y-2">
-              <h3 className="text-sm font-bold text-[#2d241e]">End-to-End Execution</h3>
-              <p className="text-xs text-[#6b5a4e]">From product selection to complete residential & commercial interior setup.</p>
-            </div>
+      {/* 10. INTERIOR INSPIRATION (SHOP THE LOOK) */}
+      <section className="bg-[#f5f1eb] py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center max-w-xl mx-auto mb-10 space-y-2">
+            <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e] font-bold">Get Inspired & Shop the Look</h2>
+            <p className="text-xs text-[#8c7a6b]">Click on room setups to buy matching curated items instantly.</p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {INSPIRATIONS.map((insp) => (
+              <div key={insp.id} className="bg-white rounded-xl overflow-hidden border border-[#e5ded4] shadow-sm flex flex-col">
+                <div className="aspect-square overflow-hidden relative">
+                  <img src={insp.image} alt={insp.title} className="w-full h-full object-cover" />
+                  <span className="absolute top-3 left-3 bg-white/90 text-[#2d241e] text-[10px] font-bold px-2 py-1 rounded">
+                    {insp.category}
+                  </span>
+                </div>
+                <div className="p-4 flex-1 flex flex-col justify-between space-y-4">
+                  <div>
+                    <h3 className="font-serif font-bold text-base text-[#2d241e]">{insp.title}</h3>
+                    <p className="text-xs text-[#8c7a6b] mt-1">Featured products in this room:</p>
+                  </div>
+                  <div className="space-y-2">
+                    {insp.linkedProductIds.map(pid => {
+                      const prod = PRODUCTS.find(p => p.id === pid);
+                      if (!prod) return null;
+                      return (
+                        <div key={pid} className="flex items-center justify-between text-xs p-2 bg-[#f8f5f0] rounded">
+                          <span className="font-medium text-[#2d241e] truncate max-w-[180px]">{prod.name}</span>
+                          <button 
+                            onClick={() => onAddToCart(prod)}
+                            className="text-[#c89d7c] font-bold hover:underline"
+                          >
+                            ₹{prod.price} +
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* SEO Section */}
-      <section className="max-w-7xl mx-auto px-4 pt-8 text-[11px] text-[#8c7a6b] space-y-3 border-t border-[#e5dcd3]">
-        <p className="font-bold text-[#2d241e]">Interior Design & Furniture Store in Indore</p>
-        <p>
-          ShreeInterio is a leading <strong>interior design company in Indore</strong> providing turn-key <strong>home interior designer in Indore</strong> services, <strong>modular kitchen design in Indore</strong>, and <strong>customized furniture in Indore</strong>. Visit our showroom at LIG Colony, RSS Nagar, Indore.
+      {/* 11. SPECIAL OFFER / PROMOTION */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="relative rounded-2xl overflow-hidden bg-[#2d241e] text-white py-16 px-8 md:px-16 flex flex-col md:flex-row items-center justify-between gap-8">
+          <div className="space-y-4 max-w-lg z-10">
+            <span className="bg-[#c89d7c] text-white text-[10px] uppercase tracking-widest font-bold px-3 py-1 rounded">
+              Limited Time Offer
+            </span>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold">
+              Make Your Space Beautiful
+            </h2>
+            <p className="text-sm text-[#d9cdbf] leading-relaxed">
+              Up to 30% OFF on selected luxury sofas, lighting fixtures, and accent mirrors. Free doorstep delivery in Indore.
+            </p>
+            <button 
+              onClick={() => setActiveTab('shop')}
+              className="bg-white text-[#2d241e] hover:bg-[#f0e8de] px-6 py-3 rounded text-xs font-bold uppercase tracking-wider transition-all"
+            >
+              Shop Now →
+            </button>
+          </div>
+          <div className="w-full md:w-1/2 aspect-video rounded-xl overflow-hidden shadow-2xl z-10">
+            <img src="https://images.unsplash.com/photo-1616594039964-ae9021a400a0?auto=format&fit=crop&q=80&w=800" alt="Offer Banner" className="w-full h-full object-cover" />
+          </div>
+        </div>
+      </section>
+
+      {/* 12. WHY CHOOSE US */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 py-8 border-y border-[#e5ded4]">
+          <div className="space-y-2">
+            <span className="text-2xl">✨</span>
+            <h3 className="font-serif font-bold text-[#2d241e] text-sm">Premium Quality</h3>
+            <p className="text-xs text-[#8c7a6b]">Handcrafted solid teak & branded materials for unmatched durability.</p>
+          </div>
+          <div className="space-y-2">
+            <span className="text-2xl">🛋️</span>
+            <h3 className="font-serif font-bold text-[#2d241e] text-sm">Trusted Service</h3>
+            <p className="text-xs text-[#8c7a6b]">100+ satisfied homeowners with end-to-end professional support.</p>
+          </div>
+          <div className="space-y-2">
+            <span className="text-2xl">🔒</span>
+            <h3 className="font-serif font-bold text-[#2d241e] text-sm">Secure Shopping</h3>
+            <p className="text-xs text-[#8c7a6b]">Transparent pricing, safe payments, and guaranteed warranties.</p>
+          </div>
+          <div className="space-y-2">
+            <span className="text-2xl">🏡</span>
+            <h3 className="font-serif font-bold text-[#2d241e] text-sm">Complete Solutions</h3>
+            <p className="text-xs text-[#8c7a6b]">Design, furniture procurement, and site execution under one roof.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 13. CUSTOMER REVIEWS */}
+      <section className="bg-[#f5f1eb] py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center max-w-xl mx-auto mb-10 space-y-2">
+            <h2 className="text-2xl md:text-3xl font-serif text-[#2d241e] font-bold">What Our Customers Say</h2>
+            <p className="text-xs text-[#8c7a6b]">Real feedback from homeowners across Indore and Central India.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {REVIEWS.map((rev, idx) => (
+              <div key={idx} className="bg-white p-6 rounded-xl border border-[#e5ded4] shadow-sm space-y-4">
+                <div className="text-amber-500 text-sm">{"★".repeat(rev.rating)}</div>
+                <p className="text-xs text-[#5c4d41] italic leading-relaxed">"{rev.comment}"</p>
+                <div className="pt-2 border-t border-[#f0e8de] flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold text-xs text-[#2d241e]">{rev.name}</h4>
+                    <span className="text-[10px] text-[#8c7a6b]">{rev.city}</span>
+                  </div>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded font-medium">Verified Customer ✓</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 14. CONSULTATION CTA */}
+      <section className="max-w-4xl mx-auto px-4 text-center space-y-4 py-8">
+        <h2 className="text-3xl font-serif text-[#2d241e] font-bold">Have a Space in Mind?</h2>
+        <p className="text-xs md:text-sm text-[#6b5b4e] max-w-md mx-auto">
+          Let's turn your ideas into a beautiful, personalized interior. Talk to our senior interior architects today.
         </p>
+        <button 
+          onClick={openConsultationModal}
+          className="bg-[#c89d7c] hover:bg-[#b08260] text-white px-8 py-3.5 rounded text-xs font-bold uppercase tracking-wider transition-all shadow-md"
+        >
+          Book Free Consultation →
+        </button>
       </section>
 
     </div>

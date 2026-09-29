@@ -1,16 +1,9 @@
 import React, { useState } from 'react';
-import { Search, Heart, ShoppingBag, User, Menu, X, ArrowRight } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, cartCount = 0, wishlistCount = 0, setIsConsultationModalOpen }) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+export default function Navbar({ activeTab, setActiveTab, cartCount, wishlistCount, openConsultationModal, openCartModal, openWishlistModal }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleNavClick = (tabName) => {
-    setActiveTab(tabName);
-    setIsMobileMenuOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
-  const navItems = [
+  const navLinks = [
     { id: 'home', label: 'Home' },
     { id: 'shop', label: 'Shop' },
     { id: 'rooms', label: 'Rooms' },
@@ -22,113 +15,126 @@ export default function Navbar({ activeTab, setActiveTab, cartCount = 0, wishlis
     { id: 'contact', label: 'Contact' },
   ];
 
+  const handleNavClick = (id) => {
+    setActiveTab(id);
+    setMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
-    <header className="bg-white sticky top-0 z-50 shadow-sm border-b border-[#e5dcd3]">
-      {/* Top Announcement Bar */}
-      <div className="bg-[#2d241e] text-[#d9cdbf] text-[10px] sm:text-[11px] py-1.5 px-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <span>✨ Complete Interior & Furniture Solutions | Free Delivery above ₹25,000</span>
-          <div className="hidden md:flex gap-4">
-            <span>📞 8435299100</span>
-            <span>✉️ sbaindore@gmail.com</span>
-          </div>
-        </div>
+    <header className="sticky top-0 z-40 bg-[#fbf9f5]/90 backdrop-blur-md border-b border-[#e5ded4]">
+      {/* Top Banner */}
+      <div className="bg-[#2d241e] text-[#d9cdbf] text-[11px] py-1.5 text-center tracking-wide font-light px-4">
+        ✨ Transform your home with ShreeInterio | Free consultation on orders above ₹50,000
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
-        {/* Mobile Toggle */}
+      <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+        {/* Mobile Menu Button */}
         <button 
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
-          className="xl:hidden p-1 text-[#2d241e]"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="lg:hidden p-2 text-[#2d241e] hover:text-[#c89d7c]"
+          aria-label="Toggle menu"
         >
-          {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          <span className="text-2xl">{mobileMenuOpen ? '✕' : '☰'}</span>
         </button>
 
         {/* LOGO */}
-        <button onClick={() => handleNavClick('home')} className="flex items-center gap-2 text-left shrink-0">
-          <div className="w-9 h-9 rounded-xl bg-[#8c6d53] text-white flex items-center justify-center font-serif font-bold text-xl">
-            S
-          </div>
-          <div>
-            <h1 className="text-lg sm:text-xl font-serif font-bold tracking-tight text-[#2d241e] leading-none">
-              ShreeInterio
-            </h1>
-            <p className="text-[8px] tracking-widest text-[#8c6d53] font-bold uppercase mt-0.5">
-              LUXURY HOMES & DECOR
-            </p>
-          </div>
-        </button>
+        <div 
+          onClick={() => handleNavClick('home')}
+          className="cursor-pointer flex items-center space-x-2"
+        >
+          <span className="text-2xl font-serif font-bold text-[#2d241e] tracking-tight">
+            Shree<span className="text-[#c89d7c]">Interio</span>
+          </span>
+        </div>
 
-        {/* Desktop Links */}
-        <nav className="hidden xl:flex items-center space-x-5 text-xs font-semibold tracking-wider text-[#42352b] uppercase">
-          {navItems.map((item) => (
+        {/* Desktop Navigation Links */}
+        <nav className="hidden lg:flex items-center space-x-6 text-xs uppercase tracking-wider font-medium text-[#5c4d41]">
+          {navLinks.map((link) => (
             <button
-              key={item.id}
-              onClick={() => handleNavClick(item.id)}
-              className={`transition-all py-1 border-b-2 ${
-                activeTab === item.id 
-                  ? 'text-[#8c6d53] border-[#8c6d53] font-bold' 
-                  : 'border-transparent hover:text-[#8c6d53]'
+              key={link.id}
+              onClick={() => handleNavClick(link.id)}
+              className={`transition-colors duration-200 hover:text-[#2d241e] py-2 border-b-2 ${
+                activeTab === link.id
+                  ? 'text-[#2d241e] border-[#c89d7c] font-semibold'
+                  : 'border-transparent'
               }`}
             >
-              {item.label}
+              {link.label}
             </button>
           ))}
         </nav>
 
-        {/* Right Action Icons & CTA Button */}
-        <div className="flex items-center gap-2 sm:gap-3 text-[#42352b]">
+        {/* Right Actions */}
+        <div className="flex items-center space-x-4">
           <button 
-            onClick={() => setIsConsultationModalOpen(true)}
-            className="hidden sm:inline-flex bg-[#8c6d53] text-white px-3 py-1.5 rounded-full text-xs font-semibold hover:bg-[#735842] transition-colors"
+            onClick={() => handleNavClick('shop')} 
+            className="p-2 text-[#2d241e] hover:text-[#c89d7c]"
+            title="Search Products"
           >
-            Book Consultation
+            🔍
           </button>
 
-          <button onClick={() => handleNavClick('shop')} className="p-2 hover:bg-[#f4eee8] rounded-full">
-            <Search size={20} />
-          </button>
-
-          <button onClick={() => handleNavClick('shop')} className="p-2 hover:bg-[#f4eee8] rounded-full relative">
-            <Heart size={20} />
+          <button 
+            onClick={openWishlistModal} 
+            className="relative p-2 text-[#2d241e] hover:text-[#c89d7c]"
+            title="Wishlist"
+          >
+            ♡
             {wishlistCount > 0 && (
-              <span className="absolute top-1 right-1 bg-rose-500 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              <span className="absolute top-0 right-0 bg-[#c89d7c] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                 {wishlistCount}
               </span>
             )}
           </button>
 
-          <button onClick={() => handleNavClick('shop')} className="p-2 hover:bg-[#f4eee8] rounded-full relative">
-            <ShoppingBag size={20} />
+          <button 
+            onClick={openCartModal} 
+            className="relative p-2 text-[#2d241e] hover:text-[#c89d7c]"
+            title="Cart"
+          >
+            🛒
             {cartCount > 0 && (
-              <span className="absolute top-1 right-1 bg-[#8c6d53] text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
+              <span className="absolute top-0 right-0 bg-[#2d241e] text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                 {cartCount}
               </span>
             )}
           </button>
-        </div>
-      </div>
 
-      {/* Mobile Drawer */}
-      {isMobileMenuOpen && (
-        <div className="xl:hidden border-t border-[#e5dcd3] bg-white px-4 py-4 space-y-2">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleNavClick(item.id)}
-              className={`block w-full text-left py-2 px-3 text-xs uppercase font-semibold rounded ${
-                activeTab === item.id ? 'bg-[#f4eee8] text-[#8c6d53]' : ''
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
           <button 
-            onClick={() => { setIsConsultationModalOpen(true); setIsMobileMenuOpen(false); }}
-            className="w-full mt-2 bg-[#8c6d53] text-white py-2.5 rounded text-xs uppercase font-bold"
+            onClick={openConsultationModal}
+            className="hidden sm:inline-block bg-[#c89d7c] hover:bg-[#b08260] text-white text-xs font-medium px-4 py-2 rounded transition-all shadow-sm"
           >
             Book Consultation
           </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {mobileMenuOpen && (
+        <div className="lg:hidden bg-[#fbf9f5] border-b border-[#e5ded4] px-4 pt-2 pb-6 space-y-2">
+          {navLinks.map((link) => (
+            <button
+              key={link.id}
+              onClick={() => handleNavClick(link.id)}
+              className={`block w-full text-left py-2.5 text-sm font-medium border-b border-[#f0e8de] ${
+                activeTab === link.id ? 'text-[#c89d7c] font-bold' : 'text-[#2d241e]'
+              }`}
+            >
+              {link.label}
+            </button>
+          ))}
+          <div className="pt-4">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                openConsultationModal();
+              }}
+              className="w-full bg-[#c89d7c] text-white text-sm font-medium py-3 rounded text-center"
+            >
+              Book Free Consultation
+            </button>
+          </div>
         </div>
       )}
     </header>
