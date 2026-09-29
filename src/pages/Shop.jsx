@@ -16,6 +16,18 @@ export default function Shop() {
     }));
   };
 
+  // Safe checks to avoid undefined map errors
+  const categories = SHOP_FILTERS?.categories || [];
+  const rooms = SHOP_FILTERS?.rooms || [];
+  const priceRanges = SHOP_FILTERS?.priceRanges || [];
+  const styles = SHOP_FILTERS?.styles || [];
+  const materials = SHOP_FILTERS?.materials || [];
+  const colors = SHOP_FILTERS?.colors || [];
+  const sizes = SHOP_FILTERS?.sizes || [];
+  const availability = SHOP_FILTERS?.availability || [];
+  const ratings = SHOP_FILTERS?.ratings || [];
+  const offers = SHOP_FILTERS?.offers || [];
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-serif font-bold text-gray-800 mb-6">Shop Collections</h1>
@@ -37,7 +49,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">CATEGORY</h3>
             <div className="space-y-2 pl-1">
-              {SHOP_FILTERS.categories.map((cat) => (
+              {categories.map((cat) => (
                 <div key={cat.id} className="border-b border-gray-100 pb-1">
                   <button 
                     onClick={() => toggleCategory(cat.id)}
@@ -49,11 +61,11 @@ export default function Shop() {
 
                   {openCategories[cat.id] && (
                     <div className="pl-3 py-1 space-y-2 text-xs text-gray-600 bg-gray-50 rounded mt-1">
-                      {cat.subcategories.map((sub, idx) => (
+                      {cat.subcategories?.map((sub, idx) => (
                         <div key={idx} className="space-y-1">
                           <p className="font-semibold text-gray-800 pt-1">{sub.name}</p>
                           <ul className="pl-2 space-y-1 border-l border-gray-200">
-                            {sub.items.map((item) => (
+                            {sub.items?.map((item) => (
                               <li key={item}>
                                 <button
                                   onClick={() => handleFilterChange('itemType', item)}
@@ -79,7 +91,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">ROOM</h3>
             <div className="space-y-1 max-h-40 overflow-y-auto pl-1 pr-1">
-              {SHOP_FILTERS.rooms.map((room) => (
+              {rooms.map((room) => (
                 <label key={room} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
                   <input
                     type="radio"
@@ -98,7 +110,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">PRICE</h3>
             <div className="space-y-1 pl-1">
-              {SHOP_FILTERS.priceRanges.map((price) => (
+              {priceRanges.map((price) => (
                 <label key={price} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
                   <input
                     type="radio"
@@ -117,7 +129,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">STYLE</h3>
             <div className="space-y-1 max-h-36 overflow-y-auto pl-1 pr-1">
-              {SHOP_FILTERS.styles.map((style) => (
+              {styles.map((style) => (
                 <label key={style} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
                   <input
                     type="radio"
@@ -136,7 +148,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">MATERIAL</h3>
             <div className="space-y-1 max-h-36 overflow-y-auto pl-1 pr-1">
-              {SHOP_FILTERS.materials.map((mat) => (
+              {materials.map((mat) => (
                 <label key={mat} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
                   <input
                     type="radio"
@@ -155,7 +167,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">COLOR</h3>
             <div className="space-y-1 max-h-36 overflow-y-auto pl-1 pr-1">
-              {SHOP_FILTERS.colors.map((color) => (
+              {colors.map((color) => (
                 <label key={color} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
                   <input
                     type="radio"
@@ -174,7 +186,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">SIZE</h3>
             <div className="space-y-1 max-h-36 overflow-y-auto pl-1 pr-1">
-              {SHOP_FILTERS.sizes.map((sz) => (
+              {sizes.map((sz) => (
                 <label key={sz} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
                   <input
                     type="radio"
@@ -193,7 +205,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">AVAILABILITY</h3>
             <div className="space-y-1 pl-1">
-              {SHOP_FILTERS.availability.map((avail) => (
+              {availability.map((avail) => (
                 <label key={avail} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
                   <input
                     type="radio"
@@ -212,7 +224,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">RATING</h3>
             <div className="space-y-1 pl-1">
-              {SHOP_FILTERS.ratings.map((rate) => (
+              {ratings.map((rate) => (
                 <label key={rate} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
                   <input
                     type="radio"
@@ -231,7 +243,7 @@ export default function Shop() {
           <div>
             <h3 className="font-semibold text-gray-900 mb-2">OFFERS</h3>
             <div className="space-y-1 pl-1">
-              {SHOP_FILTERS.offers.map((offer) => (
+              {offers.map((offer) => (
                 <label key={offer} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
                   <input
                     type="radio"

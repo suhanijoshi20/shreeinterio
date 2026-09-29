@@ -151,3 +151,4 @@ export const BLOGS = [
     excerpt: 'Transform your home with these simple interior design ideas.'
   }
 ];
+
