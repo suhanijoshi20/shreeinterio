@@ -10,7 +10,7 @@ import Projects from './pages/Project';
 import Services from './pages/Services';
 import Inspiration from './pages/Inspiration';
 import About from './pages/About';
-import Contact from './pages/Contact'; 
+import Contact from './pages/Contact'; // Agar Contact.jsx alag file hai
 
 import ProductDetail from './pages/ProductDetail';
 import { CartModal, ConsultationModal } from './components/Modals';

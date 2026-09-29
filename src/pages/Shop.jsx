@@ -1,273 +1,199 @@
-import React, { useState } from 'react';
-import { SHOP_FILTERS } from '../data/mockData';
+import React, { useState, useMemo } from 'react';
+import { PRODUCTS, ROOMS, STYLES, CATEGORIES } from '../data/mockData';
+import ProductCard from '../components/ProductCard';
 
-export default function Shop() {
-  const [selectedFilters, setSelectedFilters] = useState({});
-  const [openCategories, setOpenCategories] = useState({});
+export default function Shop({ onAddToCart, onToggleWishlist, wishlist, onSelectProduct }) {
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedRoom, setSelectedRoom] = useState('All');
+  const [selectedStyle, setSelectedStyle] = useState('All');
+  const [priceRange, setPriceRange] = useState('All');
+  const [sortBy, setSortBy] = useState('newest');
 
-  const toggleCategory = (catId) => {
-    setOpenCategories(prev => ({ ...prev, [catId]: !prev[catId] }));
-  };
+  const filteredProducts = useMemo(() => {
+    return PRODUCTS.filter(p => {
+      if (selectedCategory !== 'All' && p.category !== selectedCategory) return false;
+      if (selectedRoom !== 'All' && p.room !== selectedRoom) return false;
+      if (selectedStyle !== 'All' && p.style !== selectedStyle) return false;
+      
+      if (priceRange === 'under5k' && p.price >= 5000) return false;
+      if (priceRange === '5k-10k' && (p.price < 5000 || p.price > 10000)) return false;
+      if (priceRange === '10k-25k' && (p.price < 10000 || p.price > 25000)) return false;
+      if (priceRange === 'above25k' && p.price <= 25000) return false;
 
-  const handleFilterChange = (filterKey, value) => {
-    setSelectedFilters(prev => ({
-      ...prev,
-      [filterKey]: value
-    }));
-  };
-
-  // Safe checks to avoid undefined map errors
-  const categories = SHOP_FILTERS?.categories || [];
-  const rooms = SHOP_FILTERS?.rooms || [];
-  const priceRanges = SHOP_FILTERS?.priceRanges || [];
-  const styles = SHOP_FILTERS?.styles || [];
-  const materials = SHOP_FILTERS?.materials || [];
-  const colors = SHOP_FILTERS?.colors || [];
-  const sizes = SHOP_FILTERS?.sizes || [];
-  const availability = SHOP_FILTERS?.availability || [];
-  const ratings = SHOP_FILTERS?.ratings || [];
-  const offers = SHOP_FILTERS?.offers || [];
+      return true;
+    }).sort((a, b) => {
+      if (sortBy === 'price-low') return a.price - b.price;
+      if (sortBy === 'price-high') return b.price - a.price;
+      if (sortBy === 'popular') return b.rating - a.rating;
+      return b.id.localeCompare(a.id); // Default newest
+    });
+  }, [selectedCategory, selectedRoom, selectedStyle, priceRange, sortBy]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-serif font-bold text-gray-800 mb-6">Shop Collections</h1>
+      <div className="mb-8">
+        <h1 className="text-3xl font-serif font-bold text-[#2d241e]">Shop Furniture & Décor</h1>
+        <p className="text-xs text-[#8c7a6b] mt-1">Explore curated pieces designed for modern living.</p>
+      </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* SIDEBAR FILTERS */}
-        <aside className="w-full md:w-72 bg-white p-4 border border-gray-200 rounded-lg text-sm space-y-6 shrink-0 h-fit">
-          <div className="flex justify-between items-center border-b pb-3">
-            <h2 className="font-bold text-base text-gray-800 tracking-wide uppercase">Filters</h2>
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        
+        {/* Left Sidebar Filter */}
+        <div className="bg-white p-6 rounded-xl border border-[#e5ded4] space-y-6 h-fit">
+          <div className="flex justify-between items-center pb-3 border-b border-[#f0e8de]">
+            <h2 className="font-serif font-bold text-sm text-[#2d241e]">Filters</h2>
             <button 
-              onClick={() => setSelectedFilters({})}
-              className="text-xs text-amber-700 hover:underline font-medium"
+              onClick={() => {
+                setSelectedCategory('All');
+                setSelectedRoom('All');
+                setSelectedStyle('All');
+                setPriceRange('All');
+              }}
+              className="text-[11px] text-[#c89d7c] hover:underline"
             >
               Reset All
             </button>
           </div>
 
-          {/* 1. CATEGORY */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">CATEGORY</h3>
-            <div className="space-y-2 pl-1">
-              {categories.map((cat) => (
-                <div key={cat.id} className="border-b border-gray-100 pb-1">
-                  <button 
-                    onClick={() => toggleCategory(cat.id)}
-                    className="w-full flex justify-between items-center py-1 font-medium text-gray-700 hover:text-amber-800 text-left"
-                  >
-                    <span>{cat.label}</span>
-                    <span className="text-xs text-gray-400">{openCategories[cat.id] ? '−' : '+'}</span>
-                  </button>
-
-                  {openCategories[cat.id] && (
-                    <div className="pl-3 py-1 space-y-2 text-xs text-gray-600 bg-gray-50 rounded mt-1">
-                      {cat.subcategories?.map((sub, idx) => (
-                        <div key={idx} className="space-y-1">
-                          <p className="font-semibold text-gray-800 pt-1">{sub.name}</p>
-                          <ul className="pl-2 space-y-1 border-l border-gray-200">
-                            {sub.items?.map((item) => (
-                              <li key={item}>
-                                <button
-                                  onClick={() => handleFilterChange('itemType', item)}
-                                  className={`hover:text-amber-700 text-left w-full ${
-                                    selectedFilters.itemType === item ? 'font-bold text-amber-800' : ''
-                                  }`}
-                                >
-                                  • {item}
-                                </button>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 2. ROOM */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">ROOM</h3>
-            <div className="space-y-1 max-h-40 overflow-y-auto pl-1 pr-1">
-              {rooms.map((room) => (
-                <label key={room} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="roomFilter"
-                    checked={selectedFilters.room === room}
-                    onChange={() => handleFilterChange('room', room)}
-                    className="accent-amber-800"
+          {/* Categories Filter */}
+          <div className="space-y-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#2d241e]">Category</h3>
+            <div className="space-y-1 text-xs text-[#6b5b4e]">
+              {['All', ...CATEGORIES.map(c => c.name)].map((cat) => (
+                <label key={cat} className="flex items-center space-x-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="category" 
+                    checked={selectedCategory === cat} 
+                    onChange={() => setSelectedCategory(cat)}
+                    className="accent-[#c89d7c]"
                   />
-                  <span>{room}</span>
+                  <span>{cat}</span>
                 </label>
               ))}
             </div>
           </div>
 
-          {/* 3. PRICE */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">PRICE</h3>
-            <div className="space-y-1 pl-1">
-              {priceRanges.map((price) => (
-                <label key={price} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="priceFilter"
-                    checked={selectedFilters.price === price}
-                    onChange={() => handleFilterChange('price', price)}
-                    className="accent-amber-800"
+          {/* Room Filter */}
+          <div className="space-y-2 pt-4 border-t border-[#f0e8de]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#2d241e]">Room</h3>
+            <div className="space-y-1 text-xs text-[#6b5b4e]">
+              {['All', 'Living', 'Bedroom', 'Dining', 'Modular Kitchen', 'Home Office'].map((r) => (
+                <label key={r} className="flex items-center space-x-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="room" 
+                    checked={selectedRoom === r} 
+                    onChange={() => setSelectedRoom(r)}
+                    className="accent-[#c89d7c]"
                   />
-                  <span>{price}</span>
+                  <span>{r}</span>
                 </label>
               ))}
             </div>
           </div>
 
-          {/* 4. STYLE */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">STYLE</h3>
-            <div className="space-y-1 max-h-36 overflow-y-auto pl-1 pr-1">
-              {styles.map((style) => (
-                <label key={style} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="styleFilter"
-                    checked={selectedFilters.style === style}
-                    onChange={() => handleFilterChange('style', style)}
-                    className="accent-amber-800"
+          {/* Price Range */}
+          <div className="space-y-2 pt-4 border-t border-[#f0e8de]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#2d241e]">Price</h3>
+            <div className="space-y-1 text-xs text-[#6b5b4e]">
+              {[
+                { label: 'All Prices', val: 'All' },
+                { label: 'Under ₹5,000', val: 'under5k' },
+                { label: '₹5,000 – ₹10,000', val: '5k-10k' },
+                { label: '₹10,000 – ₹25,000', val: '10k-25k' },
+                { label: '₹25,000+', val: 'above25k' },
+              ].map((p) => (
+                <label key={p.val} className="flex items-center space-x-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="price" 
+                    checked={priceRange === p.val} 
+                    onChange={() => setPriceRange(p.val)}
+                    className="accent-[#c89d7c]"
                   />
-                  <span>{style}</span>
+                  <span>{p.label}</span>
                 </label>
               ))}
             </div>
           </div>
 
-          {/* 5. MATERIAL */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">MATERIAL</h3>
-            <div className="space-y-1 max-h-36 overflow-y-auto pl-1 pr-1">
-              {materials.map((mat) => (
-                <label key={mat} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="materialFilter"
-                    checked={selectedFilters.material === mat}
-                    onChange={() => handleFilterChange('material', mat)}
-                    className="accent-amber-800"
+          {/* Style Filter */}
+          <div className="space-y-2 pt-4 border-t border-[#f0e8de]">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#2d241e]">Style</h3>
+            <div className="space-y-1 text-xs text-[#6b5b4e]">
+              {['All', ...STYLES.map(s => s.name)].map((s) => (
+                <label key={s} className="flex items-center space-x-2 cursor-pointer">
+                  <input 
+                    type="radio" 
+                    name="style" 
+                    checked={selectedStyle === s} 
+                    onChange={() => setSelectedStyle(s)}
+                    className="accent-[#c89d7c]"
                   />
-                  <span>{mat}</span>
+                  <span>{s}</span>
                 </label>
               ))}
             </div>
           </div>
+        </div>
 
-          {/* 6. COLOR */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">COLOR</h3>
-            <div className="space-y-1 max-h-36 overflow-y-auto pl-1 pr-1">
-              {colors.map((color) => (
-                <label key={color} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="colorFilter"
-                    checked={selectedFilters.color === color}
-                    onChange={() => handleFilterChange('color', color)}
-                    className="accent-amber-800"
-                  />
-                  <span>{color}</span>
-                </label>
-              ))}
+        {/* Right Product Grid */}
+        <div className="lg:col-span-3 space-y-6">
+          
+          {/* Top Control Bar */}
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-4 rounded-xl border border-[#e5ded4] gap-4 text-xs">
+            <span className="text-[#8c7a6b]">
+              Showing <strong className="text-[#2d241e]">{filteredProducts.length}</strong> products
+            </span>
+
+            <div className="flex items-center space-x-2">
+              <span className="text-[#8c7a6b]">Sort By:</span>
+              <select 
+                value={sortBy} 
+                onChange={(e) => setSortBy(e.target.value)}
+                className="bg-[#f8f5f0] border border-[#e5ded4] rounded px-3 py-1.5 focus:outline-none text-[#2d241e]"
+              >
+                <option value="newest">Newest First</option>
+                <option value="popular">Most Popular</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+              </select>
             </div>
           </div>
 
-          {/* 7. SIZE */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">SIZE</h3>
-            <div className="space-y-1 max-h-36 overflow-y-auto pl-1 pr-1">
-              {sizes.map((sz) => (
-                <label key={sz} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="sizeFilter"
-                    checked={selectedFilters.size === sz}
-                    onChange={() => handleFilterChange('size', sz)}
-                    className="accent-amber-800"
-                  />
-                  <span>{sz}</span>
-                </label>
+          {/* Product Grid */}
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredProducts.map((p) => (
+                <ProductCard 
+                  key={p.id} 
+                  product={p} 
+                  onAddToCart={onAddToCart}
+                  onToggleWishlist={onToggleWishlist}
+                  isWishlisted={wishlist.some(item => item.id === p.id)}
+                  onSelectProduct={onSelectProduct}
+                />
               ))}
             </div>
-          </div>
-
-          {/* 8. AVAILABILITY */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">AVAILABILITY</h3>
-            <div className="space-y-1 pl-1">
-              {availability.map((avail) => (
-                <label key={avail} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="availFilter"
-                    checked={selectedFilters.availability === avail}
-                    onChange={() => handleFilterChange('availability', avail)}
-                    className="accent-amber-800"
-                  />
-                  <span>{avail}</span>
-                </label>
-              ))}
+          ) : (
+            <div className="bg-white p-12 rounded-xl text-center border border-[#e5ded4] space-y-3">
+              <p className="text-base font-serif text-[#2d241e]">No products match your selected filters.</p>
+              <button 
+                onClick={() => {
+                  setSelectedCategory('All');
+                  setSelectedRoom('All');
+                  setSelectedStyle('All');
+                  setPriceRange('All');
+                }}
+                className="text-xs bg-[#c89d7c] text-white px-4 py-2 rounded font-medium"
+              >
+                Clear Filters
+              </button>
             </div>
-          </div>
+          )}
+        </div>
 
-          {/* 9. RATING */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">RATING</h3>
-            <div className="space-y-1 pl-1">
-              {ratings.map((rate) => (
-                <label key={rate} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="ratingFilter"
-                    checked={selectedFilters.rating === rate}
-                    onChange={() => handleFilterChange('rating', rate)}
-                    className="accent-amber-800"
-                  />
-                  <span>{rate}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-
-          {/* 10. OFFERS */}
-          <div>
-            <h3 className="font-semibold text-gray-900 mb-2">OFFERS</h3>
-            <div className="space-y-1 pl-1">
-              {offers.map((offer) => (
-                <label key={offer} className="flex items-center space-x-2 text-xs text-gray-700 cursor-pointer">
-                  <input
-                    type="radio"
-                    name="offerFilter"
-                    checked={selectedFilters.offer === offer}
-                    onChange={() => handleFilterChange('offer', offer)}
-                    className="accent-amber-800"
-                  />
-                  <span>{offer}</span>
-                </label>
-              ))}
-            </div>
-          </div>
-        </aside>
-
-        {/* PRODUCTS GRID AREA */}
-        <main className="flex-1">
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center text-gray-500">
-            <p className="font-medium text-lg">Products will be filtered here.</p>
-            <p className="text-xs text-gray-400 mt-1">
-              Selected Filters: {JSON.stringify(selectedFilters)}
-            </p>
-          </div>
-        </main>
       </div>
     </div>
   );
