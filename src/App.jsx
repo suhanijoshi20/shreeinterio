@@ -6,10 +6,11 @@ import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Rooms from './pages/Rooms';
 import Styles from './pages/Styles';
-import Projects from './pages/Projects';
+import Projects from './pages/Project';
 import Services from './pages/Services';
 import Inspiration from './pages/Inspiration';
-import { About, Contact } from './pages/About';
+import About from './pages/About';
+import Contact from './pages/Contact'; 
 
 import ProductDetail from './pages/ProductDetail';
 import { CartModal, ConsultationModal } from './components/Modals';

@@ -26,3 +26,5 @@ export function Contact({ openConsultationModal }) {
     </div>
   );
 }
+
+export default Contact;
