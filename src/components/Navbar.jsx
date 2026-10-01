@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Navbar({ activeTab, setActiveTab, cartCount, wishlistCount, openConsultationModal, openCartModal, openWishlistModal }) {
+export default function Navbar({ 
+  activeTab, 
+  setActiveTab, 
+  cartCount, 
+  wishlistCount, 
+  openConsultationModal, 
+  openCartModal, 
+  openWishlistModal 
+}) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
@@ -43,17 +52,14 @@ export default function Navbar({ activeTab, setActiveTab, cartCount, wishlistCou
           onClick={() => handleNavClick('home')}
           className="cursor-pointer flex items-center space-x-3 group"
         >
-          {/* Custom Circle Logo (Dollar-style S with I inside) */}
+          {/* Custom Circle Logo */}
           <div className="w-10 h-10 rounded-full bg-[#2d241e] flex items-center justify-center text-[#c89d7c] shadow-sm group-hover:bg-[#c89d7c] group-hover:text-white transition-all duration-300">
             <svg 
               className="w-6 h-6 fill-current" 
               viewBox="0 0 100 100" 
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Outer Circle Ring */}
               <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="6" />
-              
-              {/* 'S' Shape */}
               <path 
                 d="M 65 32 C 60 24 40 24 35 34 C 30 44 65 48 65 64 C 65 78 40 78 35 68" 
                 fill="none" 
@@ -61,8 +67,6 @@ export default function Navbar({ activeTab, setActiveTab, cartCount, wishlistCou
                 strokeWidth="8" 
                 strokeLinecap="round" 
               />
-              
-              {/* 'I' Line (Vertical dollar-style line) */}
               <line 
                 x1="50" 
                 y1="18" 
@@ -143,51 +147,41 @@ export default function Navbar({ activeTab, setActiveTab, cartCount, wishlistCou
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden bg-[#fbf9f5] border-b border-[#e5ded4] px-4 pt-2 pb-6 space-y-2">
-          {navLinks.map((link) => (
-            <button
-              key={link.id}
-              onClick={() => handleNavClick(link.id)}
-              className={`block w-full text-left py-2.5 text-sm font-medium border-b border-[#f0e8de] ${
-                activeTab === link.id ? 'text-[#c89d7c] font-bold' : 'text-[#2d241e]'
-              }`}
-            >
-              {link.label}
-            </button>
-          ))}
-          <div className="pt-4">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                openConsultationModal();
-              }}
-              className="w-full bg-[#c89d7c] text-white text-sm font-medium py-3 rounded text-center"
-            >
-              Book Free Consultation
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Animated Mobile Menu Overlay */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div 
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="lg:hidden bg-[#fbf9f5] border-b border-[#e5ded4] px-4 pt-2 pb-6 space-y-2 overflow-hidden"
+          >
+            {navLinks.map((link) => (
+              <button
+                key={link.id}
+                onClick={() => handleNavClick(link.id)}
+                className={`block w-full text-left py-2.5 text-sm font-medium border-b border-[#f0e8de] ${
+                  activeTab === link.id ? 'text-[#c89d7c] font-bold' : 'text-[#2d241e]'
+                }`}
+              >
+                {link.label}
+              </button>
+            ))}
+            <div className="pt-4">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  openConsultationModal();
+                }}
+                className="w-full bg-[#c89d7c] text-white text-sm font-medium py-3 rounded text-center"
+              >
+                Book Free Consultation
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 }
-
-
-import { motion, AnimatePresence } from 'framer-motion';
-
-// Navbar ke mobile menu block ko replace karein:
-<AnimatePresence>
-  {mobileMenuOpen && (
-    <motion.div 
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: "auto", opacity: 1 }}
-      exit={{ height: 0, opacity: 0 }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="lg:hidden bg-[#fbf9f5] border-b border-[#e5ded4] px-4 pt-2 pb-6 space-y-2 overflow-hidden"
-    >
-      {/* Aapke purane navLinks buttons yahan aayenge */}
-    </motion.div>
-  )}
-</AnimatePresence>
