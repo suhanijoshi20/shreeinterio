@@ -520,3 +520,66 @@ export default function Shop({ onAddToCart }) {
     </div>
   );
 }
+
+
+import { motion } from 'framer-motion';
+
+// Parent Container (Stagger Children)
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 }
+  }
+};
+
+// Single Card Variant
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
+};
+
+export function ProductGrid({ products, onAddToCart }) {
+  return (
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-50px" }}
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      {products.map((product) => (
+        <motion.div
+          key={product.id}
+          variants={cardVariants}
+          whileHover={{ y: -6, scale: 1.01 }}
+          transition={{ type: "spring", stiffness: 300 }}
+          className="bg-white border border-stone-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300"
+        >
+          <div className="overflow-hidden h-60">
+            <motion.img 
+              src={product.image} 
+              alt={product.name} 
+              whileHover={{ scale: 1.08 }}
+              transition={{ duration: 0.4 }}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="p-4">
+            <h3 className="font-semibold text-[#2d241e]">{product.name}</h3>
+            <div className="mt-3 flex justify-between items-center">
+              <span className="font-bold text-[#2d241e]">₹{product.price}</span>
+              <motion.button 
+                whileTap={{ scale: 0.92 }}
+                onClick={() => onAddToCart(product)}
+                className="bg-[#2d241e] hover:bg-[#c89d7c] text-white px-4 py-2 rounded-lg text-xs font-medium transition-colors"
+              >
+                Add to Cart
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+      ))}
+    </motion.div>
+  );
+}

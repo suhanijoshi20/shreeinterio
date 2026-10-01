@@ -173,3 +173,21 @@ export default function Navbar({ activeTab, setActiveTab, cartCount, wishlistCou
     </header>
   );
 }
+
+
+import { motion, AnimatePresence } from 'framer-motion';
+
+// Navbar ke mobile menu block ko replace karein:
+<AnimatePresence>
+  {mobileMenuOpen && (
+    <motion.div 
+      initial={{ height: 0, opacity: 0 }}
+      animate={{ height: "auto", opacity: 1 }}
+      exit={{ height: 0, opacity: 0 }}
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      className="lg:hidden bg-[#fbf9f5] border-b border-[#e5ded4] px-4 pt-2 pb-6 space-y-2 overflow-hidden"
+    >
+      {/* Aapke purane navLinks buttons yahan aayenge */}
+    </motion.div>
+  )}
+</AnimatePresence>

@@ -2,6 +2,24 @@ import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
+import { motion } from 'framer-motion';
+
+export default function HeroSection() {
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="text-center py-12"
+    >
+      <h1 className="text-4xl font-serif font-bold text-[#2d241e]">
+        Transform Your Home with ShreeInterio
+      </h1>
+      <p className="text-stone-600 mt-2">Custom interiors crafted with precision</p>
+    </motion.div>
+  );
+}
+
 import Home from './pages/Home';
 import Shop from './pages/Shop';
 import Rooms from './pages/Rooms';
