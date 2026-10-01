@@ -1,4 +1,7 @@
 import React from 'react';
+
+import { motion } from 'framer-motion';
+
 import { PRODUCTS, ROOMS, CATEGORIES, STYLES, SERVICES, PROJECTS, INSPIRATIONS, REVIEWS } from '../data/mockData';
 import ProductCard from '../components/ProductCard';
 
@@ -7,7 +10,9 @@ export default function Home({ setActiveTab, onAddToCart, onToggleWishlist, wish
   const newArrivals = PRODUCTS.filter(p => p.isNew);
 
   return (
-    <div className="space-y-20 pb-16">
+    <motion.div initial={{ opacity: 0, y: 15 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.5, ease: "easeOut" }} className="space-y-20 pb-16">
       
       {/* 2. HERO / FRONT PAGE */}
       <section className="relative bg-[#f5f1eb] py-16 md:py-24">
@@ -389,6 +394,6 @@ export default function Home({ setActiveTab, onAddToCart, onToggleWishlist, wish
         </button>
       </section>
 
-    </div>
+    </motion.div>
   );
 }
