@@ -1,10 +1,23 @@
 import React, { useState } from 'react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-
 import { motion } from 'framer-motion';
 
-export default function HeroSection() {
+import Home from './pages/Home';
+import Shop from './pages/Shop';
+import Rooms from './pages/Rooms';
+import Styles from './pages/Styles';
+import Projects from './pages/Project';
+import Services from './pages/Services';
+import Inspiration from './pages/Inspiration';
+import About from './pages/About';
+import Contact from './pages/Contact';
+
+import ProductDetail from './pages/ProductDetail';
+import { CartModal, ConsultationModal } from './components/Modals';
+
+// HeroSection component (export default hata diya gaya hai)
+function HeroSection() {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30 }}
@@ -20,19 +33,7 @@ export default function HeroSection() {
   );
 }
 
-import Home from './pages/Home';
-import Shop from './pages/Shop';
-import Rooms from './pages/Rooms';
-import Styles from './pages/Styles';
-import Projects from './pages/Project';
-import Services from './pages/Services';
-import Inspiration from './pages/Inspiration';
-import About from './pages/About';
-import Contact from './pages/Contact'; // Agar Contact.jsx alag file hai
-
-import ProductDetail from './pages/ProductDetail';
-import { CartModal, ConsultationModal } from './components/Modals';
-
+// Single Default Export: App Component
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [cart, setCart] = useState([]);
