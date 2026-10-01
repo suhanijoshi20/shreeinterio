@@ -38,11 +38,44 @@ export default function Navbar({ activeTab, setActiveTab, cartCount, wishlistCou
           <span className="text-2xl">{mobileMenuOpen ? '✕' : '☰'}</span>
         </button>
 
-        {/* LOGO */}
+        {/* LOGO WITH CIRCLE S/I ICON */}
         <div 
           onClick={() => handleNavClick('home')}
-          className="cursor-pointer flex items-center space-x-2"
+          className="cursor-pointer flex items-center space-x-3 group"
         >
+          {/* Custom Circle Logo (Dollar-style S with I inside) */}
+          <div className="w-10 h-10 rounded-full bg-[#2d241e] flex items-center justify-center text-[#c89d7c] shadow-sm group-hover:bg-[#c89d7c] group-hover:text-white transition-all duration-300">
+            <svg 
+              className="w-6 h-6 fill-current" 
+              viewBox="0 0 100 100" 
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              {/* Outer Circle Ring */}
+              <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" strokeWidth="6" />
+              
+              {/* 'S' Shape */}
+              <path 
+                d="M 65 32 C 60 24 40 24 35 34 C 30 44 65 48 65 64 C 65 78 40 78 35 68" 
+                fill="none" 
+                stroke="currentColor" 
+                strokeWidth="8" 
+                strokeLinecap="round" 
+              />
+              
+              {/* 'I' Line (Vertical dollar-style line) */}
+              <line 
+                x1="50" 
+                y1="18" 
+                x2="50" 
+                y2="82" 
+                stroke="currentColor" 
+                strokeWidth="7" 
+                strokeLinecap="round" 
+              />
+            </svg>
+          </div>
+
+          {/* Brand Name Text */}
           <span className="text-2xl font-serif font-bold text-[#2d241e] tracking-tight">
             Shree<span className="text-[#c89d7c]">Interio</span>
           </span>
