@@ -1,15 +1,23 @@
 import React, { useState } from 'react';
 import { 
-  Compass, Palette, Calculator, Hammer, Eye, LayoutGrid, 
-  Armchair, ChefHat, DoorClosed, Lightbulb, SwatchBook, Sparkles, 
-  RefreshCw, Building2, KeyRound, CheckCircle2, ArrowRight, ShieldCheck 
-} from 'lucide-[#e5ded4]' ? lucideIcons : {}; // Lucide React icons
-import { 
-  Compass as CompassIcon, Palette as PaletteIcon, Calculator as CalculatorIcon, 
-  Hammer as HammerIcon, Eye as EyeIcon, LayoutGrid as LayoutGridIcon, 
-  Armchair as ArmchairIcon, ChefHat as ChefHatIcon, DoorClosed as DoorClosedIcon, 
-  Lightbulb as LightbulbIcon, SwatchBook as SwatchBookIcon, Sparkles as SparklesIcon, 
-  RefreshCw as RefreshCwIcon, Building2 as Building2Icon, KeyRound as KeyRoundIcon 
+  Compass as CompassIcon, 
+  Palette as PaletteIcon, 
+  Calculator as CalculatorIcon, 
+  Hammer as HammerIcon, 
+  Eye as EyeIcon, 
+  LayoutGrid as LayoutGridIcon, 
+  Armchair as ArmchairIcon, 
+  ChefHat as ChefHatIcon, 
+  DoorClosed as DoorClosedIcon, 
+  Lightbulb as LightbulbIcon, 
+  SwatchBook as SwatchBookIcon, 
+  Sparkles as SparklesIcon, 
+  RefreshCw as RefreshCwIcon, 
+  Building2 as Building2Icon, 
+  KeyRound as KeyRoundIcon,
+  CheckCircle2, 
+  ArrowRight, 
+  Sparkles 
 } from 'lucide-react';
 
 export default function Services({ setActiveTab }) {
@@ -332,7 +340,7 @@ export default function Services({ setActiveTab }) {
               <div className="grid grid-cols-2 gap-2">
                 {service.includes.map((item, idx) => (
                   <div key={idx} className="flex items-center gap-2 text-xs">
-                    <CheckCircle2 className={`w-3.5 h-3.5 ${service.isPremium ? 'text-[#c89d7c]' : 'text-[#c89d7c]'}`} />
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#c89d7c]" />
                     <span className={service.isPremium ? 'text-stone-200' : 'text-stone-700'}>{item}</span>
                   </div>
                 ))}
