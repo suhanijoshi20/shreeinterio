@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Search, Filter, RotateCcw, ChevronDown, ChevronUp, Star, ShoppingBag } from 'lucide-react';
+import { Heart, Search, Filter, RotateCcw, ChevronDown, ChevronUp, Star, ShoppingBag, Check } from 'lucide-react';
 import { PRODUCTS } from '../data/mockData';
 
 // --- MASTER SHOP FILTER DATA (COMPLETELY INTEGRATED) ---
@@ -113,7 +113,7 @@ const MASTER_FILTER_DATA = {
     }
   ],
   rooms: [
-    "All", "Living Room", "Master Bedroom", "Guest Bedroom", "Kids Bedroom", "Dining Room", "Modular Kitchen", "Home Office", "Study Room", "Bathroom", "Entryway", "Hallway", "Balcony", "Terrace", "Patio", "Garden", "Outdoor", "Nursery", "Guest Room", "Dressing Room", "Home Theatre", "Pooja Room", "Utility Room"
+    "Living Room", "Master Bedroom", "Guest Bedroom", "Kids Bedroom", "Dining Room", "Modular Kitchen", "Home Office", "Study Room", "Bathroom", "Entryway", "Hallway", "Balcony", "Terrace", "Patio", "Garden", "Outdoor", "Nursery", "Guest Room", "Dressing Room", "Home Theatre", "Pooja Room", "Utility Room"
   ],
   styles: [
     "Modern", "Minimal", "Contemporary", "Luxury", "Scandinavian", "Japandi", "Boho", "Industrial", "Rustic", "Traditional", "Classic", "Vintage", "Retro", "Mid-Century Modern", "Farmhouse", "Coastal", "Mediterranean", "French Country", "Art Deco", "Indian Contemporary", "Modern Indian", "Transitional", "Eclectic", "Urban", "Cottage", "Tropical"
@@ -167,7 +167,6 @@ const MASTER_FILTER_DATA = {
   statuses: ["New Arrival", "Best Seller", "Trending", "Featured", "Limited Edition", "Exclusive", "Made to Order", "Customizable", "Pre-Order", "In Stock", "Out of Stock"],
   ratings: [5, 4, 3, 2, 1],
   priceRanges: [
-    { label: "All Prices", min: 0, max: Infinity },
     { label: "Under ₹2,500", min: 0, max: 2500 },
     { label: "₹2,500–₹5,000", min: 2500, max: 5000 },
     { label: "₹5,000–₹10,000", min: 5000, max: 10000 },
@@ -194,22 +193,22 @@ const cardVariants = {
 };
 
 export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = [], onSelectProduct }) {
-  // --- Filter States ---
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedProductType, setSelectedProductType] = useState('All');
-  const [selectedRoom, setSelectedRoom] = useState('All');
-  const [selectedPriceIndex, setSelectedPriceIndex] = useState(0);
-  const [selectedStyle, setSelectedStyle] = useState('All');
-  const [selectedMaterial, setSelectedMaterial] = useState('All');
-  const [selectedColor, setSelectedColor] = useState('All');
-  const [selectedSize, setSelectedSize] = useState('All');
-  const [selectedShape, setSelectedShape] = useState('All');
-  const [selectedFinish, setSelectedFinish] = useState('All');
-  const [selectedStatus, setSelectedStatus] = useState('All');
-  const [selectedRating, setSelectedRating] = useState(null);
-  const [selectedOffer, setSelectedOffer] = useState('All');
-  const [selectedFeature, setSelectedFeature] = useState('All');
-  const [selectedCollection, setSelectedCollection] = useState('All');
+  // --- Checkbox Multi-Select Filter States ---
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedProductTypes, setSelectedProductTypes] = useState([]);
+  const [selectedRooms, setSelectedRooms] = useState([]);
+  const [selectedPrices, setSelectedPrices] = useState([]);
+  const [selectedStyles, setSelectedStyles] = useState([]);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
+  const [selectedColors, setSelectedColors] = useState([]);
+  const [selectedSizes, setSelectedSizes] = useState([]);
+  const [selectedShapes, setSelectedShapes] = useState([]);
+  const [selectedFinishes, setSelectedFinishes] = useState([]);
+  const [selectedStatuses, setSelectedStatuses] = useState([]);
+  const [selectedRatings, setSelectedRatings] = useState([]);
+  const [selectedOffers, setSelectedOffers] = useState([]);
+  const [selectedFeatures, setSelectedFeatures] = useState([]);
+  const [selectedCollections, setSelectedCollections] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('featured');
 
@@ -235,7 +234,26 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
     setExpandedSection(prev => ({ ...prev, [section]: !prev[section] }));
   };
 
-  // --- Filtering Logic ---
+  // Helper function to toggle checkboxes in arrays
+  const toggleArrayFilter = (setter, currentArray, value) => {
+    if (currentArray.includes(value)) {
+      setter(currentArray.filter(item => item !== value));
+    } else {
+      setter([...currentArray, value]);
+    }
+  };
+
+  // --- Reusable Custom Checkbox UI Component ---
+  const CheckboxItem = ({ label, isChecked, onChange }) => (
+    <label className="flex items-center gap-2 py-1 text-xs text-stone-600 hover:text-[#2d241e] cursor-pointer select-none group">
+      <div className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${isChecked ? 'bg-[#2d241e] border-[#2d241e]' : 'bg-white border-stone-300 group-hover:border-stone-400'}`}>
+        {isChecked && <Check className="w-3 h-3 text-white stroke-[3]" />}
+      </div>
+      <span className={isChecked ? 'font-bold text-[#2d241e]' : 'font-medium'}>{label}</span>
+    </label>
+  );
+
+  // --- Multi-Select Filtering Logic ---
   const filteredProducts = useMemo(() => {
     let items = PRODUCTS || [];
 
@@ -244,25 +262,30 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
       items = items.filter(p => p.name?.toLowerCase().includes(q) || p.category?.toLowerCase().includes(q));
     }
 
-    if (selectedCategory !== 'All') {
-      items = items.filter(p => p.category?.toLowerCase() === selectedCategory.toLowerCase());
+    if (selectedCategories.length > 0) {
+      items = items.filter(p => selectedCategories.some(cat => cat.toLowerCase() === p.category?.toLowerCase()));
     }
 
-    if (selectedRoom !== 'All') {
-      items = items.filter(p => p.room?.toLowerCase() === selectedRoom.toLowerCase());
+    if (selectedRooms.length > 0) {
+      items = items.filter(p => selectedRooms.some(room => room.toLowerCase() === p.room?.toLowerCase()));
     }
 
-    if (selectedStyle !== 'All') {
-      items = items.filter(p => p.style?.toLowerCase() === selectedStyle.toLowerCase());
+    if (selectedStyles.length > 0) {
+      items = items.filter(p => selectedStyles.some(style => style.toLowerCase() === p.style?.toLowerCase()));
     }
 
-    if (selectedPriceIndex > 0) {
-      const range = MASTER_FILTER_DATA.priceRanges[selectedPriceIndex];
-      items = items.filter(p => p.price >= range.min && p.price <= range.max);
+    if (selectedPrices.length > 0) {
+      items = items.filter(p => {
+        return selectedPrices.some(idx => {
+          const range = MASTER_FILTER_DATA.priceRanges[idx];
+          return p.price >= range.min && p.price <= range.max;
+        });
+      });
     }
 
-    if (selectedRating !== null) {
-      items = items.filter(p => (p.rating || 4.5) >= selectedRating);
+    if (selectedRatings.length > 0) {
+      const minRating = Math.min(...selectedRatings);
+      items = items.filter(p => (p.rating || 4.5) >= minRating);
     }
 
     if (sortBy === 'price-low') {
@@ -272,24 +295,24 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
     }
 
     return items;
-  }, [searchQuery, selectedCategory, selectedRoom, selectedStyle, selectedPriceIndex, selectedRating, sortBy]);
+  }, [searchQuery, selectedCategories, selectedRooms, selectedStyles, selectedPrices, selectedRatings, sortBy]);
 
   const resetFilters = () => {
-    setSelectedCategory('All');
-    setSelectedProductType('All');
-    setSelectedRoom('All');
-    setSelectedPriceIndex(0);
-    setSelectedStyle('All');
-    setSelectedMaterial('All');
-    setSelectedColor('All');
-    setSelectedSize('All');
-    setSelectedShape('All');
-    setSelectedFinish('All');
-    setSelectedStatus('All');
-    setSelectedRating(null);
-    setSelectedOffer('All');
-    setSelectedFeature('All');
-    setSelectedCollection('All');
+    setSelectedCategories([]);
+    setSelectedProductTypes([]);
+    setSelectedRooms([]);
+    setSelectedPrices([]);
+    setSelectedStyles([]);
+    setSelectedMaterials([]);
+    setSelectedColors([]);
+    setSelectedSizes([]);
+    setSelectedShapes([]);
+    setSelectedFinishes([]);
+    setSelectedStatuses([]);
+    setSelectedRatings([]);
+    setSelectedOffers([]);
+    setSelectedFeatures([]);
+    setSelectedCollections([]);
     setSearchQuery('');
   };
 
@@ -339,7 +362,7 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* --- SIDEBAR FILTERS (COLLAPSIBLE ACCORDION) --- */}
+        {/* --- SIDEBAR FILTERS (CHECKBOX ACCORDION) --- */}
         <aside className={`lg:block ${isMobileFilterOpen ? 'block' : 'hidden'} space-y-4 bg-[#fbf9f5] p-5 rounded-2xl border border-stone-200 h-fit max-h-[85vh] overflow-y-auto sticky top-24`}>
           <div className="flex justify-between items-center border-b border-stone-200 pb-3">
             <h2 className="font-bold text-[#2d241e] text-base uppercase tracking-wider">Filters</h2>
@@ -353,29 +376,33 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 1. CATEGORY */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('category')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('category')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>CATEGORY</span>
               {expandedSection.category ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.category && (
-              <div className="mt-2 space-y-2 text-xs">
-                <button onClick={() => setSelectedCategory('All')} className={`block text-left w-full ${selectedCategory === 'All' ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                  ○ All Categories
-                </button>
+              <div className="space-y-1 text-xs">
                 {MASTER_FILTER_DATA.categories.map((cat) => (
                   <div key={cat.name} className="space-y-1">
-                    <button onClick={() => setSelectedCategory(cat.name)} className={`block text-left w-full font-medium ${selectedCategory === cat.name ? 'text-[#c89d7c] font-bold' : 'text-stone-700'}`}>
-                      ○ {cat.name}
-                    </button>
-                    {selectedCategory === cat.name && (
-                      <div className="pl-3 border-l border-stone-300 space-y-1">
+                    <div onClick={() => toggleArrayFilter(setSelectedCategories, selectedCategories, cat.name)}>
+                      <CheckboxItem
+                        label={cat.name}
+                        isChecked={selectedCategories.includes(cat.name)}
+                      />
+                    </div>
+
+                    {selectedCategories.includes(cat.name) && (
+                      <div className="pl-5 border-l-2 border-stone-200 my-1 space-y-2">
                         {Object.entries(cat.subcategories).map(([sub, items]) => (
                           <div key={sub} className="py-0.5">
-                            <span className="text-[10px] font-bold text-stone-400 block uppercase">{sub}</span>
+                            <span className="text-[10px] font-bold text-stone-400 block uppercase mb-1">{sub}</span>
                             {items.map(item => (
-                              <button key={item} onClick={() => setSelectedProductType(item)} className={`block text-[11px] hover:text-[#c89d7c] ${selectedProductType === item ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                                • {item}
-                              </button>
+                              <div key={item} onClick={() => toggleArrayFilter(setSelectedProductTypes, selectedProductTypes, item)}>
+                                <CheckboxItem
+                                  label={item}
+                                  isChecked={selectedProductTypes.includes(item)}
+                                />
+                              </div>
                             ))}
                           </div>
                         ))}
@@ -389,16 +416,19 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 2. ROOM */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('room')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('room')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>ROOM</span>
               {expandedSection.room ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.room && (
-              <div className="mt-2 space-y-1 text-xs max-h-40 overflow-y-auto">
+              <div className="space-y-1 text-xs max-h-40 overflow-y-auto pr-1">
                 {MASTER_FILTER_DATA.rooms.map(room => (
-                  <button key={room} onClick={() => setSelectedRoom(room)} className={`block text-left w-full py-0.5 ${selectedRoom === room ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ {room}
-                  </button>
+                  <div key={room} onClick={() => toggleArrayFilter(setSelectedRooms, selectedRooms, room)}>
+                    <CheckboxItem
+                      label={room}
+                      isChecked={selectedRooms.includes(room)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -406,16 +436,19 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 3. PRICE */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('price')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('price')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>PRICE</span>
               {expandedSection.price ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.price && (
-              <div className="mt-2 space-y-1 text-xs">
+              <div className="space-y-1 text-xs">
                 {MASTER_FILTER_DATA.priceRanges.map((range, idx) => (
-                  <button key={range.label} onClick={() => setSelectedPriceIndex(idx)} className={`block text-left w-full py-0.5 ${selectedPriceIndex === idx ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ {range.label}
-                  </button>
+                  <div key={range.label} onClick={() => toggleArrayFilter(setSelectedPrices, selectedPrices, idx)}>
+                    <CheckboxItem
+                      label={range.label}
+                      isChecked={selectedPrices.includes(idx)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -423,17 +456,19 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 4. STYLE */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('style')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('style')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>STYLE</span>
               {expandedSection.style ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.style && (
-              <div className="mt-2 space-y-1 text-xs max-h-36 overflow-y-auto">
-                <button onClick={() => setSelectedStyle('All')} className={`block text-left w-full py-0.5 ${selectedStyle === 'All' ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>○ All Styles</button>
+              <div className="space-y-1 text-xs max-h-36 overflow-y-auto pr-1">
                 {MASTER_FILTER_DATA.styles.map(style => (
-                  <button key={style} onClick={() => setSelectedStyle(style)} className={`block text-left w-full py-0.5 ${selectedStyle === style ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ {style}
-                  </button>
+                  <div key={style} onClick={() => toggleArrayFilter(setSelectedStyles, selectedStyles, style)}>
+                    <CheckboxItem
+                      label={style}
+                      isChecked={selectedStyles.includes(style)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -441,19 +476,22 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 5. MATERIAL */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('material')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('material')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>MATERIAL</span>
               {expandedSection.material ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.material && (
-              <div className="mt-2 space-y-2 text-xs max-h-40 overflow-y-auto">
+              <div className="space-y-2 text-xs max-h-40 overflow-y-auto pr-1">
                 {Object.entries(MASTER_FILTER_DATA.materials).map(([matCat, mats]) => (
                   <div key={matCat}>
-                    <span className="text-[10px] font-bold text-stone-400 block uppercase">{matCat}</span>
+                    <span className="text-[10px] font-bold text-stone-400 block uppercase mb-1">{matCat}</span>
                     {mats.map(mat => (
-                      <button key={mat} onClick={() => setSelectedMaterial(mat)} className={`block text-left w-full py-0.5 ${selectedMaterial === mat ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                        • {mat}
-                      </button>
+                      <div key={mat} onClick={() => toggleArrayFilter(setSelectedMaterials, selectedMaterials, mat)}>
+                        <CheckboxItem
+                          label={mat}
+                          isChecked={selectedMaterials.includes(mat)}
+                        />
+                      </div>
                     ))}
                   </div>
                 ))}
@@ -463,48 +501,69 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 6. COLOR */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('color')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('color')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>COLOR</span>
               {expandedSection.color ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.color && (
               <div className="mt-2 flex flex-wrap gap-1.5 max-h-36 overflow-y-auto p-1">
-                {MASTER_FILTER_DATA.colors.map(color => (
-                  <button key={color.name} onClick={() => setSelectedColor(color.name)} title={color.name} className={`w-5 h-5 rounded-full border border-stone-300 ${selectedColor === color.name ? 'ring-2 ring-[#c89d7c] scale-110' : ''}`} style={{ backgroundColor: color.hex }} />
-                ))}
+                {MASTER_FILTER_DATA.colors.map(color => {
+                  const isChecked = selectedColors.includes(color.name);
+                  return (
+                    <button
+                      key={color.name}
+                      onClick={() => toggleArrayFilter(setSelectedColors, selectedColors, color.name)}
+                      title={color.name}
+                      className={`w-5 h-5 rounded-full border border-stone-300 relative flex items-center justify-center transition-all ${isChecked ? 'ring-2 ring-[#2d241e] scale-110' : ''}`}
+                      style={{ backgroundColor: color.hex }}
+                    >
+                      {isChecked && <Check className={`w-3 h-3 ${['White', 'Off White', 'Ivory', 'Cream', 'Yellow'].includes(color.name) ? 'text-black' : 'text-white'}`} />}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
 
           {/* 7. SIZE */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('size')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('size')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>SIZE</span>
               {expandedSection.size ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.size && (
-              <div className="mt-2 flex flex-wrap gap-1 max-h-32 overflow-y-auto">
-                {MASTER_FILTER_DATA.sizes.map(size => (
-                  <button key={size} onClick={() => setSelectedSize(size)} className={`px-2 py-0.5 border rounded text-[10px] ${selectedSize === size ? 'bg-[#2d241e] text-white' : 'bg-white text-stone-700'}`}>
-                    {size}
-                  </button>
-                ))}
+              <div className="mt-2 flex flex-wrap gap-1 max-h-32 overflow-y-auto pr-1">
+                {MASTER_FILTER_DATA.sizes.map(size => {
+                  const isChecked = selectedSizes.includes(size);
+                  return (
+                    <button
+                      key={size}
+                      onClick={() => toggleArrayFilter(setSelectedSizes, selectedSizes, size)}
+                      className={`px-2 py-0.5 border rounded text-[10px] transition-all ${isChecked ? 'bg-[#2d241e] text-white border-[#2d241e]' : 'bg-white text-stone-700 hover:border-stone-400'}`}
+                    >
+                      {size}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>
 
           {/* 8. SHAPE */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('shape')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('shape')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>SHAPE</span>
               {expandedSection.shape ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.shape && (
-              <div className="mt-2 space-y-1 text-xs">
+              <div className="space-y-1 text-xs">
                 {MASTER_FILTER_DATA.shapes.map(shape => (
-                  <button key={shape} onClick={() => setSelectedShape(shape)} className={`block text-left w-full py-0.5 ${selectedShape === shape ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ {shape}
-                  </button>
+                  <div key={shape} onClick={() => toggleArrayFilter(setSelectedShapes, selectedShapes, shape)}>
+                    <CheckboxItem
+                      label={shape}
+                      isChecked={selectedShapes.includes(shape)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -512,16 +571,19 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 9. FINISH */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('finish')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('finish')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>FINISH</span>
               {expandedSection.finish ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.finish && (
-              <div className="mt-2 space-y-1 text-xs max-h-32 overflow-y-auto">
+              <div className="space-y-1 text-xs max-h-32 overflow-y-auto pr-1">
                 {MASTER_FILTER_DATA.finishes.map(finish => (
-                  <button key={finish} onClick={() => setSelectedFinish(finish)} className={`block text-left w-full py-0.5 ${selectedFinish === finish ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ {finish}
-                  </button>
+                  <div key={finish} onClick={() => toggleArrayFilter(setSelectedFinishes, selectedFinishes, finish)}>
+                    <CheckboxItem
+                      label={finish}
+                      isChecked={selectedFinishes.includes(finish)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -529,16 +591,19 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 10. PRODUCT STATUS */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('status')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('status')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>PRODUCT STATUS</span>
               {expandedSection.status ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.status && (
-              <div className="mt-2 space-y-1 text-xs max-h-32 overflow-y-auto">
+              <div className="space-y-1 text-xs max-h-32 overflow-y-auto pr-1">
                 {MASTER_FILTER_DATA.statuses.map(st => (
-                  <button key={st} onClick={() => setSelectedStatus(st)} className={`block text-left w-full py-0.5 ${selectedStatus === st ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ {st}
-                  </button>
+                  <div key={st} onClick={() => toggleArrayFilter(setSelectedStatuses, selectedStatuses, st)}>
+                    <CheckboxItem
+                      label={st}
+                      isChecked={selectedStatuses.includes(st)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -546,16 +611,19 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 11. RATING */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('rating')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('rating')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>CUSTOMER RATING</span>
               {expandedSection.rating ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.rating && (
-              <div className="mt-2 space-y-1 text-xs">
+              <div className="space-y-1 text-xs">
                 {MASTER_FILTER_DATA.ratings.map(stars => (
-                  <button key={stars} onClick={() => setSelectedRating(stars)} className={`block text-left w-full py-0.5 ${selectedRating === stars ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ ⭐ {stars} Star{stars > 1 ? 's' : ''} & Above
-                  </button>
+                  <div key={stars} onClick={() => toggleArrayFilter(setSelectedRatings, selectedRatings, stars)}>
+                    <CheckboxItem
+                      label={`⭐ ${stars} Star${stars > 1 ? 's' : ''} & Above`}
+                      isChecked={selectedRatings.includes(stars)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -563,16 +631,19 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 12. OFFERS */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('offers')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('offers')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>OFFERS</span>
               {expandedSection.offers ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.offers && (
-              <div className="mt-2 space-y-1 text-xs">
+              <div className="space-y-1 text-xs">
                 {MASTER_FILTER_DATA.offers.map(offer => (
-                  <button key={offer} onClick={() => setSelectedOffer(offer)} className={`block text-left w-full py-0.5 ${selectedOffer === offer ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ {offer}
-                  </button>
+                  <div key={offer} onClick={() => toggleArrayFilter(setSelectedOffers, selectedOffers, offer)}>
+                    <CheckboxItem
+                      label={offer}
+                      isChecked={selectedOffers.includes(offer)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -580,16 +651,19 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 13. SPECIAL FEATURES */}
           <div className="border-b border-stone-200 pb-3">
-            <button onClick={() => toggleSection('features')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('features')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>SPECIAL FEATURES</span>
               {expandedSection.features ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.features && (
-              <div className="mt-2 space-y-1 text-xs max-h-32 overflow-y-auto">
+              <div className="space-y-1 text-xs max-h-32 overflow-y-auto pr-1">
                 {MASTER_FILTER_DATA.specialFeatures.map(feat => (
-                  <button key={feat} onClick={() => setSelectedFeature(feat)} className={`block text-left w-full py-0.5 ${selectedFeature === feat ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ {feat}
-                  </button>
+                  <div key={feat} onClick={() => toggleArrayFilter(setSelectedFeatures, selectedFeatures, feat)}>
+                    <CheckboxItem
+                      label={feat}
+                      isChecked={selectedFeatures.includes(feat)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
@@ -597,16 +671,19 @@ export default function ShopSection({ onAddToCart, onToggleWishlist, wishlist = 
 
           {/* 14. COLLECTION */}
           <div>
-            <button onClick={() => toggleSection('collections')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider">
+            <button onClick={() => toggleSection('collections')} className="flex justify-between items-center w-full font-semibold text-[#2d241e] text-xs uppercase tracking-wider mb-2">
               <span>COLLECTION</span>
               {expandedSection.collections ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
             </button>
             {expandedSection.collections && (
-              <div className="mt-2 space-y-1 text-xs max-h-32 overflow-y-auto">
+              <div className="space-y-1 text-xs max-h-32 overflow-y-auto pr-1">
                 {MASTER_FILTER_DATA.collections.map(col => (
-                  <button key={col} onClick={() => setSelectedCollection(col)} className={`block text-left w-full py-0.5 ${selectedCollection === col ? 'text-[#c89d7c] font-bold' : 'text-stone-600'}`}>
-                    ○ {col}
-                  </button>
+                  <div key={col} onClick={() => toggleArrayFilter(setSelectedCollections, selectedCollections, col)}>
+                    <CheckboxItem
+                      label={col}
+                      isChecked={selectedCollections.includes(col)}
+                    />
+                  </div>
                 ))}
               </div>
             )}
