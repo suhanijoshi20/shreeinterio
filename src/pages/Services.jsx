@@ -20,8 +20,33 @@ import {
   Sparkles 
 } from 'lucide-react';
 
+// Animation components ko import karein
+import { 
+  AnimatedGrid, 
+  AnimatedItem, 
+  AnimatedCard, 
+  FadeUp, 
+  InfiniteTicker, 
+  BackgroundGlow 
+} from '../components/Animations';
+
 export default function Services({ setActiveTab }) {
   const [selectedCategory, setSelectedCategory] = useState('All');
+
+  // WhatsApp click handler helper
+  const handleCardClick = (title) => {
+    const text = encodeURIComponent(`Hello ShreeInterio, I am interested in your service: ${title}. Please provide more details.`);
+    window.open(`https://wa.me/919000000000?text=${text}`, '_blank');
+  };
+
+  const tickerItems = [
+    "3D Interior Visualization",
+    "Turnkey Execution",
+    "Modular Kitchens",
+    "Custom Furniture",
+    "Architectural Planning",
+    "Budget Interior Solutions"
+  ];
 
   const coreServices = [
     {
@@ -161,7 +186,7 @@ export default function Services({ setActiveTab }) {
       id: 15,
       title: "Turnkey Interior Solutions",
       subtitle: "Client ko design se execution tak complete solution.",
-      icon: <KeyRoundIcon className="w-6 h-6 text-[#c89d7c]" />,
+      icon: <KeyRoundIcon className="w-6 h-6 text-white" />,
       isPremium: true,
       flow: ["Concept", "Design", "Material", "Procurement", "Execution", "Installation", "Final Handover"],
       includes: ["Single Point Contact", "End-to-End Execution", "Quality Assurance", "On-Time Handover"]
@@ -169,203 +194,276 @@ export default function Services({ setActiveTab }) {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 space-y-16">
-      
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="text-xs font-bold uppercase tracking-widest text-[#c89d7c] bg-[#c89d7c]/10 px-3 py-1 rounded-full">
-          Complete Interior Solutions
-        </span>
-        <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#2d241e]">Our Interior Services</h1>
-        <p className="text-stone-600 text-sm md:text-base">
-          From concept design to final turnkey execution — explore our 15 comprehensive interior design and architectural services.
-        </p>
-      </div>
+    <div className="relative overflow-hidden">
+      {/* Background Glow Element */}
+      <BackgroundGlow />
 
-      {/* CORE SERVICES */}
-      <section className="space-y-6">
-        <div className="border-b border-stone-200 pb-3">
-          <h2 className="text-xl font-serif font-bold text-[#2d241e] flex items-center gap-2">
-            <span className="w-2 h-6 bg-[#2d241e] rounded-full inline-block"></span> CORE SERVICES
-          </h2>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 py-12 space-y-16 relative z-10">
+        
+        {/* Header */}
+        <FadeUp className="text-center max-w-3xl mx-auto space-y-4">
+          <span className="text-xs font-bold uppercase tracking-widest text-[#c89d7c] bg-[#c89d7c]/10 px-3 py-1 rounded-full border border-[#c89d7c]/20">
+            Complete Interior Solutions
+          </span>
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#2d241e]">Our Interior Services</h1>
+          <p className="text-stone-600 text-sm md:text-base">
+            From concept design to final turnkey execution — explore our 15 comprehensive interior design and architectural services.
+          </p>
+        </FadeUp>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {coreServices.map(service => (
-            <div key={service.id} className="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm hover:shadow-md transition-all flex flex-col justify-between">
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-3 bg-[#fbf9f5] rounded-xl border border-stone-100">{service.icon}</div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-[#2d241e] text-white px-2.5 py-1 rounded-md">
-                    {service.badge}
-                  </span>
-                </div>
-                <h3 className="text-xl font-serif font-bold text-[#2d241e]">{service.title}</h3>
-                <p className="text-xs text-stone-500 mt-1 mb-4">{service.subtitle}</p>
+        {/* Infinite Moving Marquee Ticker */}
+        <FadeUp delay={0.1}>
+          <InfiniteTicker items={tickerItems} />
+        </FadeUp>
 
-                <div className="space-y-2 mb-4">
-                  <p className="text-xs font-bold text-[#2d241e] uppercase tracking-wider">Includes:</p>
-                  <div className="grid grid-cols-2 gap-2">
-                    {service.includes.map((item, idx) => (
-                      <div key={idx} className="flex items-center gap-1.5 text-xs text-stone-700">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-[#c89d7c] shrink-0" />
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+        {/* CORE SERVICES */}
+        <section className="space-y-6">
+          <FadeUp>
+            <div className="border-b border-stone-200 pb-3">
+              <h2 className="text-xl font-serif font-bold text-[#2d241e] flex items-center gap-2">
+                <span className="w-2 h-6 bg-[#2d241e] rounded-full inline-block"></span> CORE SERVICES
+              </h2>
+            </div>
+          </FadeUp>
 
-                {/* Free Consultancy Special Expertise Box */}
-                {service.expertiseBreakdown && (
-                  <div className="mt-4 p-4 bg-[#fbf9f5] rounded-xl border border-stone-200 space-y-2">
-                    <p className="text-xs font-bold text-[#c89d7c]">{service.expertiseBreakdown.title}</p>
-                    <div className="grid grid-cols-2 gap-2 pt-1">
-                      {service.expertiseBreakdown.items.map((exp, idx) => (
-                        <div key={idx} className="text-[11px] text-stone-600 bg-white px-2 py-1 rounded border border-stone-200">
-                          • {exp}
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {coreServices.map(service => (
+              <AnimatedItem key={service.id}>
+                <AnimatedCard className="h-full bg-white rounded-2xl border border-stone-200 p-6 shadow-sm cursor-pointer hover:border-[#c89d7c] group">
+                  <div onClick={() => handleCardClick(service.title)} className="flex flex-col justify-between h-full">
+                    <div>
+                      <div className="flex justify-between items-start mb-4">
+                        <div className="p-3 bg-[#fbf9f5] rounded-xl border border-stone-100 group-hover:bg-[#c89d7c]/10 transition-colors">
+                          {service.icon}
                         </div>
-                      ))}
+                        <span className="text-[10px] font-bold uppercase tracking-wider bg-[#2d241e] text-white px-2.5 py-1 rounded-md">
+                          {service.badge}
+                        </span>
+                      </div>
+                      <h3 className="text-xl font-serif font-bold text-[#2d241e] group-hover:text-[#c89d7c] transition-colors">
+                        {service.title}
+                      </h3>
+                      <p className="text-xs text-stone-500 mt-1 mb-4">{service.subtitle}</p>
+
+                      <div className="space-y-2 mb-4">
+                        <p className="text-xs font-bold text-[#2d241e] uppercase tracking-wider">Includes:</p>
+                        <div className="grid grid-cols-2 gap-2">
+                          {service.includes.map((item, idx) => (
+                            <div key={idx} className="flex items-center gap-1.5 text-xs text-stone-700">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-[#c89d7c] shrink-0" />
+                              <span>{item}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Free Consultancy Special Expertise Box */}
+                      {service.expertiseBreakdown && (
+                        <div className="mt-4 p-4 bg-[#fbf9f5] rounded-xl border border-stone-200 space-y-2">
+                          <p className="text-xs font-bold text-[#c89d7c]">{service.expertiseBreakdown.title}</p>
+                          <div className="grid grid-cols-2 gap-2 pt-1">
+                            {service.expertiseBreakdown.items.map((exp, idx) => (
+                              <div key={idx} className="text-[11px] text-stone-600 bg-white px-2 py-1 rounded border border-stone-200">
+                                • {exp}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="mt-6 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#c89d7c]">
+                      <span>Enquire via WhatsApp</span>
+                      <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
-                )}
-              </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            ))}
+          </AnimatedGrid>
+        </section>
+
+        {/* DESIGN SERVICES */}
+        <section className="space-y-6">
+          <FadeUp>
+            <div className="border-b border-stone-200 pb-3">
+              <h2 className="text-xl font-serif font-bold text-[#2d241e] flex items-center gap-2">
+                <span className="w-2 h-6 bg-[#c89d7c] rounded-full inline-block"></span> DESIGN SERVICES
+              </h2>
             </div>
-          ))}
-        </div>
-      </section>
+          </FadeUp>
 
-      {/* DESIGN SERVICES */}
-      <section className="space-y-6">
-        <div className="border-b border-stone-200 pb-3">
-          <h2 className="text-xl font-serif font-bold text-[#2d241e] flex items-center gap-2">
-            <span className="w-2 h-6 bg-[#c89d7c] rounded-full inline-block"></span> DESIGN SERVICES
-          </h2>
-        </div>
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {designServices.map(service => (
+              <AnimatedItem key={service.id}>
+                <AnimatedCard className="h-full bg-white rounded-2xl border border-stone-200 p-5 shadow-sm cursor-pointer hover:border-[#c89d7c] group">
+                  <div onClick={() => handleCardClick(service.title)} className="flex flex-col justify-between h-full">
+                    <div>
+                      <div className="p-2.5 bg-[#fbf9f5] rounded-xl border border-stone-100 w-fit mb-3 group-hover:bg-[#c89d7c]/10 transition-colors">
+                        {service.icon}
+                      </div>
+                      <h3 className="text-lg font-serif font-bold text-[#2d241e] group-hover:text-[#c89d7c] transition-colors">
+                        {service.title}
+                      </h3>
+                      <p className="text-xs text-stone-500 mt-1 mb-3">{service.subtitle}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {designServices.map(service => (
-            <div key={service.id} className="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm hover:shadow-md transition-all">
-              <div className="p-2.5 bg-[#fbf9f5] rounded-xl border border-stone-100 w-fit mb-3">{service.icon}</div>
-              <h3 className="text-lg font-serif font-bold text-[#2d241e]">{service.title}</h3>
-              <p className="text-xs text-stone-500 mt-1 mb-3">{service.subtitle}</p>
+                      <div className="space-y-1.5 border-t border-stone-100 pt-3">
+                        {service.includes.map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-1.5 text-xs text-stone-600">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#c89d7c]"></span>
+                            <span>{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
-              <div className="space-y-1.5 border-t border-stone-100 pt-3">
-                {service.includes.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-1.5 text-xs text-stone-600">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#c89d7c]"></span>
-                    <span>{item}</span>
+                    <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#c89d7c]">
+                      <span>Get Consultation</span>
+                      <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
-                ))}
-              </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            ))}
+          </AnimatedGrid>
+        </section>
+
+        {/* SPECIALIZED INTERIOR SERVICES */}
+        <section className="space-y-6">
+          <FadeUp>
+            <div className="border-b border-stone-200 pb-3">
+              <h2 className="text-xl font-serif font-bold text-[#2d241e] flex items-center gap-2">
+                <span className="w-2 h-6 bg-[#2d241e] rounded-full inline-block"></span> SPECIALIZED INTERIOR SERVICES
+              </h2>
             </div>
-          ))}
-        </div>
-      </section>
+          </FadeUp>
 
-      {/* SPECIALIZED INTERIOR SERVICES */}
-      <section className="space-y-6">
-        <div className="border-b border-stone-200 pb-3">
-          <h2 className="text-xl font-serif font-bold text-[#2d241e] flex items-center gap-2">
-            <span className="w-2 h-6 bg-[#2d241e] rounded-full inline-block"></span> SPECIALIZED INTERIOR SERVICES
-          </h2>
-        </div>
+          <AnimatedGrid className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {specializedServices.map(service => (
+              <AnimatedItem key={service.id}>
+                <AnimatedCard className="h-full bg-white rounded-2xl border border-stone-200 p-5 shadow-sm cursor-pointer hover:border-[#c89d7c] group">
+                  <div onClick={() => handleCardClick(service.title)} className="flex flex-col justify-between h-full">
+                    <div>
+                      <div className="p-2.5 bg-[#fbf9f5] rounded-xl border border-stone-100 w-fit mb-3 group-hover:bg-[#c89d7c]/10 transition-colors">
+                        {service.icon}
+                      </div>
+                      <h3 className="text-base font-serif font-bold text-[#2d241e] group-hover:text-[#c89d7c] transition-colors">
+                        {service.title}
+                      </h3>
+                      <p className="text-xs text-stone-500 mt-1 mb-3">{service.subtitle}</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {specializedServices.map(service => (
-            <div key={service.id} className="bg-white rounded-2xl border border-stone-200 p-5 shadow-sm hover:shadow-md transition-all">
-              <div className="p-2.5 bg-[#fbf9f5] rounded-xl border border-stone-100 w-fit mb-3">{service.icon}</div>
-              <h3 className="text-base font-serif font-bold text-[#2d241e]">{service.title}</h3>
-              <p className="text-xs text-stone-500 mt-1 mb-3">{service.subtitle}</p>
+                      <div className="space-y-1.5 border-t border-stone-100 pt-3">
+                        {service.includes.map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-1.5 text-xs text-stone-600">
+                            <CheckCircle2 className="w-3 h-3 text-[#c89d7c] shrink-0" />
+                            <span>{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
-              <div className="space-y-1.5 border-t border-stone-100 pt-3">
-                {service.includes.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-1.5 text-xs text-stone-600">
-                    <CheckCircle2 className="w-3 h-3 text-[#c89d7c] shrink-0" />
-                    <span>{item}</span>
+                    <div className="mt-4 pt-3 border-t border-stone-100 flex items-center justify-between text-xs font-bold text-[#c89d7c]">
+                      <span>Book Service</span>
+                      <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
-                ))}
-              </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            ))}
+          </AnimatedGrid>
+        </section>
+
+        {/* COMPLETE SOLUTIONS & TURNKEY */}
+        <section className="space-y-6">
+          <FadeUp>
+            <div className="border-b border-stone-200 pb-3">
+              <h2 className="text-xl font-serif font-bold text-[#2d241e] flex items-center gap-2">
+                <span className="w-2 h-6 bg-[#c89d7c] rounded-full inline-block"></span> COMPLETE & TURNKEY SOLUTIONS
+              </h2>
             </div>
-          ))}
-        </div>
-      </section>
+          </FadeUp>
 
-      {/* COMPLETE SOLUTIONS & TURNKEY */}
-      <section className="space-y-6">
-        <div className="border-b border-stone-200 pb-3">
-          <h2 className="text-xl font-serif font-bold text-[#2d241e] flex items-center gap-2">
-            <span className="w-2 h-6 bg-[#c89d7c] rounded-full inline-block"></span> COMPLETE & TURNKEY SOLUTIONS
-          </h2>
-        </div>
+          <AnimatedGrid className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {completeSolutions.map(service => (
+              <AnimatedItem key={service.id}>
+                <AnimatedCard 
+                  className={`h-full rounded-2xl border p-6 cursor-pointer group ${
+                    service.isPremium 
+                      ? 'bg-[#2d241e] text-white border-[#2d241e] shadow-lg hover:border-[#c89d7c]' 
+                      : 'bg-white text-[#2d241e] border-stone-200 shadow-sm hover:border-[#c89d7c]'
+                  }`}
+                >
+                  <div onClick={() => handleCardClick(service.title)} className="flex flex-col justify-between h-full">
+                    <div>
+                      <div className="flex justify-between items-start mb-4">
+                        <div className={`p-3 rounded-xl border ${service.isPremium ? 'bg-white/10 border-white/20' : 'bg-[#fbf9f5] border-stone-100'}`}>
+                          {service.icon}
+                        </div>
+                        {service.isPremium && (
+                          <span className="text-[10px] font-bold uppercase tracking-wider bg-[#c89d7c] text-white px-2.5 py-1 rounded-md flex items-center gap-1">
+                            <Sparkles className="w-3 h-3" /> Premium Service
+                          </span>
+                        )}
+                      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {completeSolutions.map(service => (
-            <div 
-              key={service.id} 
-              className={`rounded-2xl border p-6 transition-all ${
-                service.isPremium 
-                  ? 'bg-[#2d241e] text-white border-[#2d241e] shadow-lg' 
-                  : 'bg-white text-[#2d241e] border-stone-200 shadow-sm'
-              }`}
+                      <h3 className="text-2xl font-serif font-bold group-hover:text-[#c89d7c] transition-colors">{service.title}</h3>
+                      <p className={`text-xs mt-1 mb-6 ${service.isPremium ? 'text-stone-300' : 'text-stone-500'}`}>{service.subtitle}</p>
+
+                      {/* Turnkey Process Workflow */}
+                      {service.flow && (
+                        <div className="mb-6 bg-white/5 p-4 rounded-xl border border-white/10">
+                          <p className="text-[10px] uppercase font-bold text-[#c89d7c] tracking-widest mb-3">Turnkey Execution Flow</p>
+                          <div className="flex flex-wrap items-center gap-2 text-xs">
+                            {service.flow.map((step, idx) => (
+                              <React.Fragment key={idx}>
+                                <span className="px-2.5 py-1 rounded bg-white/10 font-medium text-stone-200">{step}</span>
+                                {idx < service.flow.length - 1 && <ArrowRight className="w-3 h-3 text-[#c89d7c]" />}
+                              </React.Fragment>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="grid grid-cols-2 gap-2">
+                        {service.includes.map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-2 text-xs">
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#c89d7c]" />
+                            <span className={service.isPremium ? 'text-stone-200' : 'text-stone-700'}>{item}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mt-6 pt-4 border-t border-stone-100/20 flex items-center justify-between text-xs font-bold text-[#c89d7c]">
+                      <span>Get Started with Turnkey Solution</span>
+                      <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                    </div>
+                  </div>
+                </AnimatedCard>
+              </AnimatedItem>
+            ))}
+          </AnimatedGrid>
+        </section>
+
+        {/* CTA Section */}
+        <FadeUp>
+          <div className="bg-[#fbf9f5] rounded-3xl p-8 text-center border border-stone-200 space-y-4 shadow-sm">
+            <h3 className="text-2xl font-serif font-bold text-[#2d241e]">Ready to Transform Your Space?</h3>
+            <p className="text-xs text-stone-600 max-w-md mx-auto">
+              Book a Free Consultation session with our interior designers and architects today.
+            </p>
+            <a 
+              href="https://wa.me/919000000000?text=Hello%20ShreeInterio,%20I%20want%20to%20book%20a%20Free%20Consultancy%20session." 
+              target="_blank" 
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 bg-[#2d241e] text-white px-6 py-3 rounded-xl text-xs font-bold hover:bg-[#c89d7c] transition-all transform hover:-translate-y-0.5 shadow-md"
             >
-              <div className="flex justify-between items-start mb-4">
-                <div className={`p-3 rounded-xl border ${service.isPremium ? 'bg-white/10 border-white/20' : 'bg-[#fbf9f5] border-stone-100'}`}>
-                  {service.icon}
-                </div>
-                {service.isPremium && (
-                  <span className="text-[10px] font-bold uppercase tracking-wider bg-[#c89d7c] text-white px-2.5 py-1 rounded-md flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" /> Premium Service
-                  </span>
-                )}
-              </div>
+              Book Free Consultation via WhatsApp <ArrowRight className="w-4 h-4" />
+            </a>
+          </div>
+        </FadeUp>
 
-              <h3 className="text-2xl font-serif font-bold">{service.title}</h3>
-              <p className={`text-xs mt-1 mb-6 ${service.isPremium ? 'text-stone-300' : 'text-stone-500'}`}>{service.subtitle}</p>
-
-              {/* Turnkey Process Workflow */}
-              {service.flow && (
-                <div className="mb-6 bg-white/5 p-4 rounded-xl border border-white/10">
-                  <p className="text-[10px] uppercase font-bold text-[#c89d7c] tracking-widest mb-3">Turnkey Execution Flow</p>
-                  <div className="flex flex-wrap items-center gap-2 text-xs">
-                    {service.flow.map((step, idx) => (
-                      <React.Fragment key={idx}>
-                        <span className="px-2.5 py-1 rounded bg-white/10 font-medium text-stone-200">{step}</span>
-                        {idx < service.flow.length - 1 && <ArrowRight className="w-3 h-3 text-[#c89d7c]" />}
-                      </React.Fragment>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-2">
-                {service.includes.map((item, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-xs">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#c89d7c]" />
-                    <span className={service.isPremium ? 'text-stone-200' : 'text-stone-700'}>{item}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <div className="bg-[#fbf9f5] rounded-3xl p-8 text-center border border-stone-200 space-y-4">
-        <h3 className="text-2xl font-serif font-bold text-[#2d241e]">Ready to Transform Your Space?</h3>
-        <p className="text-xs text-stone-600 max-w-md mx-auto">
-          Book a Free Consultation session with our interior designers and architects today.
-        </p>
-        <a 
-          href="https://wa.me/919000000000?text=Hello%20ShreeInterio,%20I%20want%20to%20book%20a%20Free%20Consultancy%20session." 
-          target="_blank" 
-          rel="noreferrer"
-          className="inline-flex items-center gap-2 bg-[#2d241e] text-white px-6 py-3 rounded-xl text-xs font-bold hover:bg-[#c89d7c] transition-all"
-        >
-          Book Free Consultation via WhatsApp <ArrowRight className="w-4 h-4" />
-        </a>
       </div>
-
     </div>
   );
 }
