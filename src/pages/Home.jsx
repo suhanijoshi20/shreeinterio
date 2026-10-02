@@ -3,6 +3,10 @@ import { motion } from 'framer-motion';
 import { PRODUCTS, SERVICES, PROJECTS, INSPIRATIONS, REVIEWS } from '../data/mockData';
 import ProductCard from '../components/ProductCard';
 
+<span className="animate-float inline-block bg-[#c89d7c] text-white px-3 py-1 rounded-full text-xs">
+  ✨ #1 Interior Designers in Indore
+</span>
+
 // Comprehensive Dynamic Categories List
 const ALL_CATEGORIES = [
   { name: 'Furniture', image: 'https://images.unsplash.com/photo-1555041469-a586c61ea9bc?auto=format&fit=crop&q=80&w=400' },
