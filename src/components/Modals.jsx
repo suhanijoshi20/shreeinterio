@@ -1,6 +1,6 @@
 import React from 'react';
 
-// Cart Drawer
+// 1. Cart Drawer
 export function CartModal({ isOpen, onClose, cartItems, onRemoveFromCart, onUpdateQuantity }) {
   if (!isOpen) return null;
 
@@ -21,9 +21,9 @@ export function CartModal({ isOpen, onClose, cartItems, onRemoveFromCart, onUpda
             ) : (
               cartItems.map((item) => (
                 <div key={item.id} className="flex items-center space-x-4 bg-white p-3 rounded-lg border border-[#e5ded4]">
-                  <img src={item.image} alt={item.name} className="w-16 h-16 object-cover rounded" />
+                  <img src={item.image || item.img || item.photo} alt={item.name || item.title} className="w-16 h-16 object-cover rounded" />
                   <div className="flex-1 text-xs">
-                    <h3 className="font-bold text-[#2d241e]">{item.name}</h3>
+                    <h3 className="font-bold text-[#2d241e]">{item.name || item.title}</h3>
                     <p className="text-[#8c7a6b]">₹{item.price}</p>
                     <div className="flex items-center space-x-2 mt-1">
                       <button onClick={() => onUpdateQuantity(item.id, item.quantity - 1)} className="px-2 bg-gray-200 rounded">-</button>
@@ -54,7 +54,58 @@ export function CartModal({ isOpen, onClose, cartItems, onRemoveFromCart, onUpda
   );
 }
 
-// Book Consultation Modal
+// 2. Wishlist Drawer (YE MISSING THA)
+export function WishlistModal({ isOpen, onClose, wishlistItems = [], onToggleWishlist, onAddToCart }) {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex justify-end">
+      <div className="bg-[#fbf9f5] w-full max-w-md h-full p-6 flex flex-col justify-between shadow-2xl">
+        <div>
+          <div className="flex justify-between items-center pb-4 border-b border-[#e5ded4]">
+            <h2 className="font-serif font-bold text-lg text-[#2d241e]">Your Wishlist ({wishlistItems.length})</h2>
+            <button onClick={onClose} className="text-xl font-bold">✕</button>
+          </div>
+
+          <div className="mt-4 space-y-4 max-h-[70vh] overflow-y-auto">
+            {wishlistItems.length === 0 ? (
+              <div className="text-center py-12 text-[#8c7a6b]">
+                <p className="text-3xl mb-2">♡</p>
+                <p className="text-xs">Your wishlist is currently empty.</p>
+              </div>
+            ) : (
+              wishlistItems.map((item) => {
+                const img = item.image || item.img || item.photo || item.src;
+                const title = item.title || item.name || 'Saved Item';
+
+                return (
+                  <div key={item.id} className="flex items-center space-x-4 bg-white p-3 rounded-lg border border-[#e5ded4]">
+                    <img src={img} alt={title} className="w-16 h-16 object-cover rounded" />
+                    <div className="flex-1 text-xs">
+                      <h3 className="font-bold text-[#2d241e] line-clamp-1">{title}</h3>
+                      {item.price && <p className="text-[#8c7a6b]">₹{item.price}</p>}
+                      <button 
+                        onClick={() => onAddToCart(item)}
+                        className="mt-1.5 px-2 py-1 bg-[#c89d7c] text-white rounded text-[10px] font-bold"
+                      >
+                        Move to Cart
+                      </button>
+                    </div>
+                    <button onClick={() => onToggleWishlist(item)} className="text-xs text-red-500 font-bold">
+                      ✕
+                    </button>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// 3. Book Consultation Modal
 export function ConsultationModal({ isOpen, onClose }) {
   if (!isOpen) return null;
 

@@ -14,9 +14,9 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 
 import ProductDetail from './pages/ProductDetail';
-import { CartModal, ConsultationModal } from './components/Modals';
+// 1. Yahan WishlistModal add kiya hai
+import { CartModal, ConsultationModal, WishlistModal } from './components/Modals';
 
-// HeroSection component (export default hata diya gaya hai)
 function HeroSection() {
   return (
     <motion.div 
@@ -33,7 +33,6 @@ function HeroSection() {
   );
 }
 
-// Single Default Export: App Component
 export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [cart, setCart] = useState([]);
@@ -127,7 +126,7 @@ export default function App() {
         {activeTab === 'contact' && <Contact openConsultationModal={() => setIsConsultationOpen(true)} />}
       </main>
 
-      {/* 15. FOOTER */}
+      {/* FOOTER */}
       <Footer 
         setActiveTab={setActiveTab} 
         openConsultationModal={() => setIsConsultationOpen(true)} 
@@ -151,6 +150,15 @@ export default function App() {
         cartItems={cart}
         onRemoveFromCart={handleRemoveFromCart}
         onUpdateQuantity={handleUpdateQuantity}
+      />
+
+      {/* 2. Yahan WishlistModal tag render kiya hai */}
+      <WishlistModal
+        isOpen={isWishlistOpen}
+        onClose={() => setIsWishlistOpen(false)}
+        wishlistItems={wishlist}
+        onToggleWishlist={handleToggleWishlist}
+        onAddToCart={handleAddToCart}
       />
 
       <ConsultationModal 
