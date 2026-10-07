@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const ALL_STYLES = [
   { id: 'modern', name: 'Modern', desc: 'Clean lines, sleek surfaces, and crisp geometric shapes with high functionality.', image: 'https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&q=80&w=800' },
@@ -30,6 +32,14 @@ const ALL_STYLES = [
 ];
 
 export default function Styles({ setActiveTab, setSelectedStyle }) {
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      easing: 'ease-out-cubic',
+    });
+  }, []);
+
   const handleStyleClick = (styleName) => {
     if (setSelectedStyle) {
       setSelectedStyle(styleName);
@@ -40,16 +50,23 @@ export default function Styles({ setActiveTab, setSelectedStyle }) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 space-y-10">
-      <div className="text-center max-w-xl mx-auto space-y-2">
+    <div className="max-w-7xl mx-auto px-4 py-12 space-y-10 overflow-hidden">
+      {/* Header Section */}
+      <div 
+        className="text-center max-w-xl mx-auto space-y-2"
+        data-aos="fade-down"
+      >
         <h1 className="text-3xl font-serif font-bold text-[#2d241e]">Shop By Style</h1>
         <p className="text-xs text-[#8c7a6b]">Filter curated interior concepts and furniture by your favorite design aesthetic.</p>
       </div>
 
+      {/* Grid Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {ALL_STYLES.map((style) => (
+        {ALL_STYLES.map((style, index) => (
           <div 
             key={style.id}
+            data-aos="fade-up"
+            data-aos-delay={(index % 3) * 100} // Horizontal staggered animation delay
             onClick={() => handleStyleClick(style.name)}
             className="group bg-white rounded-xl overflow-hidden border border-[#e5ded4] cursor-pointer shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
           >
