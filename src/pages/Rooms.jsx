@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const ALL_ROOMS = [
   { id: 'living-room', name: 'Living Room', desc: 'Sofa sets, coffee tables, TV units & ambient lighting.', image: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&q=80&w=800' },
@@ -26,26 +28,37 @@ const ALL_ROOMS = [
 ];
 
 export default function Rooms({ setActiveTab, setSelectedRoom }) {
+  useEffect(() => {
+    AOS.init({
+      duration: 800,
+      once: true,
+      easing: 'ease-out-cubic',
+    });
+  }, []);
+
   const handleRoomClick = (roomName) => {
-    if (setSelectedRoom) {
-      setSelectedRoom(roomName);
-    }
-    if (setActiveTab) {
-      setActiveTab('shop');
-    }
+    if (setSelectedRoom) setSelectedRoom(roomName);
+    if (setActiveTab) setActiveTab('shop');
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-12 space-y-10">
-      <div className="text-center max-w-xl mx-auto space-y-2">
+    <div className="max-w-7xl mx-auto px-4 py-12 space-y-10 overflow-hidden">
+      {/* Header Section with Fade Down */}
+      <div 
+        className="text-center max-w-xl mx-auto space-y-2"
+        data-aos="fade-down"
+      >
         <h1 className="text-3xl font-serif font-bold text-[#2d241e]">Shop Your Space</h1>
         <p className="text-xs text-[#8c7a6b]">Explore customized interior concepts and furniture organized by room type.</p>
       </div>
 
+      {/* Cards Grid with Fade Up & Staggered Delays */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {ALL_ROOMS.map((room) => (
+        {ALL_ROOMS.map((room, index) => (
           <div 
             key={room.id}
+            data-aos="fade-up"
+            data-aos-delay={(index % 3) * 100} // Stagger effect per row
             onClick={() => handleRoomClick(room.name)}
             className="group bg-white rounded-xl overflow-hidden border border-[#e5ded4] cursor-pointer shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
           >
